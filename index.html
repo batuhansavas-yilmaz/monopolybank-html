@@ -48,6 +48,35 @@ input,select{width:100%;height:52px;border:1px solid #bbb;border-radius:10px;pad
 dialog{border:0;border-radius:18px;padding:0;width:min(430px,calc(100% - 32px));box-shadow:0 10px 50px #0004}dialog::backdrop{background:#0006}.dialog-body{padding:22px}.dialog-body h3{margin-top:0}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
 .toast{position:fixed;left:50%;bottom:85px;transform:translateX(-50%);background:#333;color:#fff;padding:13px 18px;border-radius:10px;z-index:20;display:none;max-width:90%;text-align:center}.toast.show{display:block}
 @media(max-width:480px){main{padding:12px 12px 90px}.quick button{font-size:13px}.players-head button{padding:11px 10px}.appbar h1{font-size:17px}}
+
+.player-manage{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+
+.rename-input{
+  width:100%;
+  height:44px;
+  border:1px solid #aaa;
+  border-radius:10px;
+  padding:0 12px;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.danger{
+  background:#ffebee;
+  color:#c62828;
+  border:1px solid #ef9a9a;
+}
+
+.success{
+  background:#e8f5e9;
+  color:#2e7d32;
+  border:1px solid #a5d6a7;
+}
 </style>
 </head>
 <body>
@@ -187,10 +216,77 @@ function closeDialog(id){document.getElementById(id).close()}
 function removePlayer(key){
   const p=playersObj[key];
   if(!p)return;
+
   if(!confirm(p.name+' oyuncusunu silmek istiyor musun?'))return;
+
   gameRef.child('players').child(key).remove();
+
   if(selectedFrom===key)selectedFrom=null;
   if(selectedTo===key)selectedTo=null;
+
+  toast(p.name+' silindi.',true);
+}
+  function renamePlayer(key){
+  const input=document.getElementById('renameInput_'+key);
+  if(!input)return;
+
+  const newName=input.value.trim();
+
+  if(!newName){
+    toast('Oyuncu adı boş olamaz.');
+    return;
+  }
+
+  gameRef.child('players').child(key).child('name').set(newName);
+  toast('Oyuncu adı "'+newName+'" olarak değiştirildi.',true);
+}
+  function editPlayerName(key){
+  const p=playersObj[key];
+  if(!p)return;
+
+  const playerInfo=document.querySelector(
+    `.player-card [onclick="editPlayerName('${key}')"]`
+  ).closest('.player-card').querySelector('.player-info');
+
+  playerInfo.innerHTML=`
+    <input
+      id="renameInput_${key}"
+      class="rename-input"
+      value="${esc(p.name)}"
+      maxlength="30"
+      autofocus
+    >
+
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <button
+        class="btn success"
+        style="padding:8px 12px"
+        onclick="renamePlayer('${key}')">
+        ✓ Kaydet
+      </button>
+
+      <button
+        class="btn outline"
+        style="padding:8px 12px"
+        onclick="renderPlayers()">
+        İptal
+      </button>
+    </div>
+
+    <div class="balance">
+      ${fmt(p.balance)}
+    </div>
+  `;
+
+  const input=document.getElementById('renameInput_'+key);
+  input.focus();
+  input.select();
+
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){
+      renamePlayer(key);
+    }
+  });
 }
 
 function amountFromInput(){
@@ -321,34 +417,95 @@ function formatAmountInput(el){
 function renderPlayers(){
   document.getElementById('playersPage').innerHTML=`
     <div class="card players-head">
-      <div><h2>Oyuncular</h2><span>${players.length}/6 oyuncu</span></div>
-      <button class="btn primary" onclick="openPlayerDialog()" ${players.length>=6?'disabled':''}>＋ Oyuncu Ekle</button>
-    </div>
-    ${players.length?players.map(p=>`
-      <div class="card player-card">
-        <div class="player-top">
-          <div class="avatar">${esc(p.name[0].toUpperCase())}</div>
-          <div class="player-info"><div class="player-name" style="font-size:18px">${esc(p.name)}</div><div class="balance">${fmt(p.balance)}</div></div>
-          <button class="menu" onclick="openPlayerMenu('${p.key}')">⋮</button>
-        </div>
-        <div class="player-actions">
-          <button class="btn outline" onclick="removeMoney('${p.key}',2000000)">−2M</button>
-          <button class="btn outline" onclick="removeMoney('${p.key}',1000000)">−1M</button>
-          <button class="btn tonal" onclick="addMoney('${p.key}',1000000)">＋1M</button>
-          <button class="btn primary" onclick="addMoney('${p.key}',2000000)">＋2M</button>
-        </div>
-        <div class="progress"><span style="width:${Math.min(Math.max(p.balance/30000000,0),1)*100}%"></span></div>
-      </div>`).join(''):`<div class="card empty"><div class="big">👥</div><h3>Henüz oyuncu yok.</h3><button class="btn primary" onclick="openPlayerDialog()">＋ İlk Oyuncuyu Ekle</button></div>`}`;
-}
+      <div>
+        <h2>Oyuncular</h2>
+        <span>${players.length}/6 oyuncu</span>
+      </div>
 
-function openPlayerMenu(key){
-  const choice=prompt('1: +1M\\n2: +2M\\n3: -1M\\n4: -2M\\n5: Özel tutar ekle\\n6: Oyuncuyu sil');
-  if(choice==='1')addMoney(key,1000000);
-  else if(choice==='2')addMoney(key,2000000);
-  else if(choice==='3')removeMoney(key,1000000);
-  else if(choice==='4')removeMoney(key,2000000);
-  else if(choice==='5')openCustom(key);
-  else if(choice==='6')removePlayer(key);
+      <button class="btn primary"
+        onclick="openPlayerDialog()"
+        ${players.length>=6?'disabled':''}>
+        ＋ Oyuncu Ekle
+      </button>
+    </div>
+
+    ${players.length
+      ? players.map(p=>`
+        <div class="card player-card">
+
+          <div class="player-top">
+
+            <div class="avatar">
+              ${esc(p.name[0].toUpperCase())}
+            </div>
+
+            <div class="player-info">
+              <div class="player-name" style="font-size:18px">
+                ${esc(p.name)}
+              </div>
+
+              <div class="balance">
+                ${fmt(p.balance)}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="player-actions">
+            <button class="btn outline"
+              onclick="removeMoney('${p.key}',2000000)">
+              −2M
+            </button>
+
+            <button class="btn outline"
+              onclick="removeMoney('${p.key}',1000000)">
+              −1M
+            </button>
+
+            <button class="btn tonal"
+              onclick="addMoney('${p.key}',1000000)">
+              ＋1M
+            </button>
+
+            <button class="btn primary"
+              onclick="addMoney('${p.key}',2000000)">
+              ＋2M
+            </button>
+          </div>
+
+          <div class="progress">
+            <span style="width:${Math.min(Math.max(p.balance/30000000,0),1)*100}%"></span>
+          </div>
+
+          <div class="player-manage">
+
+            <button class="btn success"
+              onclick="editPlayerName('${p.key}')">
+              ✏️ İsmi Değiştir
+            </button>
+
+            <button class="btn danger"
+              onclick="removePlayer('${p.key}')">
+              🗑️ Sil
+            </button>
+
+          </div>
+
+        </div>
+      `).join('')
+
+      : `
+        <div class="card empty">
+          <div class="big">👥</div>
+          <h3>Henüz oyuncu yok.</h3>
+
+          <button class="btn primary"
+            onclick="openPlayerDialog()">
+            ＋ İlk Oyuncuyu Ekle
+          </button>
+        </div>
+      `
+    }`;
 }
 
 function renderHistory(){
