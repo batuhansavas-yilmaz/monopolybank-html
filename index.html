@@ -387,13 +387,7 @@ function renderPOS(){
           <input id="amount" inputmode="numeric" placeholder="Örn: 1.500" value="${window.amountValue||''}" oninput="formatAmountInput(this)">
           <div class="helper">1.500 = 1.500.000 ₺</div>
         </div>
-        <div class="quick-title">HIZLI TUTAR</div>
-        <div class="quick">
-          <button class="btn outline" onclick="changeAmount(-2000)">− 2M</button>
-          <button class="btn outline" onclick="changeAmount(-1000)">− 1M</button>
-          <button class="btn tonal" onclick="changeAmount(1000)">+ 1M</button>
-          <button class="btn primary" onclick="changeAmount(2000)">+ 2M</button>
-        </div>
+       
         <button class="btn primary complete" onclick="transferMoney()">💳 ÖDEMEYİ TAMAMLA</button>
       `}
     </div>
@@ -471,10 +465,6 @@ function renderPlayers(){
               onclick="addMoney('${p.key}',2000000)">
               ＋2M
             </button>
-          </div>
-
-          <div class="progress">
-            <span style="width:${Math.min(Math.max(p.balance/30000000,0),1)*100}%"></span>
           </div>
 
           <div class="player-manage">
