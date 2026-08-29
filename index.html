@@ -28,7 +28,10 @@ button{cursor:pointer}
   box-shadow:0 1px 5px #0001;
   position:sticky;
   top:0;
-  z-index:5
+  z-index:5;
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.14),
+    0 5px 14px rgba(0,0,0,0.08);
 }
 
 .appbar h1{
@@ -93,7 +96,12 @@ main{
   border-radius:18px;
   margin-bottom:16px;
   padding:20px;
-  box-shadow:0 1px 4px #0000000d
+
+
+
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.14),
+    0 5px 14px rgba(0,0,0,0.08);
 }
 
 .total{
@@ -103,6 +111,12 @@ main{
   background:linear-gradient(135deg,#4527a0,#7e57c2);
   border-radius:20px;
   margin-bottom:16px;
+
+
+
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.14),
+    0 5px 14px rgba(0,0,0,0.08);
 }
 
 .total .icon{
@@ -980,8 +994,203 @@ dialog::backdrop{
   }
 }
 }
-  html, body{
-  touch-action: pan-x pan-y;
+/* =========================================================
+   OYUNCU GRID SİSTEMİ
+   1 = 1 kolon
+   2 = 2 kolon
+   3 = 2 + 1 tam genişlik
+   4 = 2x2
+   5 = 2x2 + 1 tam genişlik
+   6 = 2x3
+   ========================================================= */
+
+.player-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+.player-grid .player-card{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+
+  box-shadow:
+    0 2px 6px rgba(0,0,0,0.14),
+    0 5px 14px rgba(0,0,0,0.08) !important;
+
+  background:#fff;
+}
+
+/* 1 oyuncu */
+.player-grid.players-1{
+  grid-template-columns:1fr;
+}
+
+/* 3 oyuncu */
+.player-grid.players-3 .player-card:nth-child(3){
+  grid-column:1 / -1;
+}
+
+/* 5 oyuncu */
+.player-grid.players-5 .player-card:nth-child(5){
+  grid-column:1 / -1;
+}
+
+
+/* =========================================================
+   KARE OYUNCU KARTI
+   ========================================================= */
+
+.player-grid .player-card{
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+}
+
+.player-grid .player-top{
+  width:100%;
+}
+
+.player-grid .player-info{
+  width:100%;
+  min-width:0;
+}
+
+
+/* İsim + kalem + çöp */
+
+.player-grid .player-name-line{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:5px;
+  width:100%;
+}
+
+.player-grid .player-name-line .player-name{
+  min-width:0;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:16px !important;
+}
+
+.player-grid .player-mini-actions{
+  display:flex;
+  gap:4px;
+  flex-shrink:0;
+}
+
+
+/* Para butonları */
+
+.player-grid .player-compact-actions{
+  width:100%;
+  margin-top:9px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:4px;
+}
+
+.player-grid .money-mini{
+  width:100%;
+  min-width:0;
+  height:31px;
+  font-size:10px;
+}
+
+
+/* Manuel para */
+
+.player-grid .manual-mini{
+  grid-column:1 / -1;
+
+  width:100%;
+  margin:0;
+
+  display:grid;
+  grid-template-columns:32px minmax(0,1fr) 32px;
+  gap:4px;
+}
+
+.player-grid .manual-mini input{
+  width:100%;
+  height:31px;
+  min-width:0;
+}
+
+.player-grid .manual-mini button{
+  width:32px;
+  height:31px;
+}
+
+
+/* Bakiye */
+
+.player-grid .balance{
+  margin-top:9px;
+  font-size:15px;
+  white-space:nowrap;
+}
+
+
+/* =========================================================
+   GENİŞ EKRANLARDA DA AYNI DÜZEN
+   ========================================================= */
+
+@media(min-width:481px){
+
+  .player-grid .player-card{
+    min-height:150px;
+  }
+
+}
+
+
+/* =========================================================
+   TELEFON
+   ========================================================= */
+
+@media(max-width:480px){
+
+  .player-grid{
+    gap:8px;
+  }
+
+  .player-grid .player-card{
+    padding:11px;
+  }
+
+  .player-grid .player-name-line .player-name{
+    font-size:15px !important;
+  }
+
+  .player-grid .mini-btn{
+    width:27px;
+    height:27px;
+    font-size:12px;
+  }
+
+  .player-grid .player-compact-actions{
+    gap:3px;
+  }
+
+  .player-grid .money-mini{
+    height:30px;
+    font-size:10px;
+  }
+
+  .player-grid .manual-mini{
+    grid-template-columns:30px minmax(0,1fr) 30px;
+    gap:3px;
+  }
+
+  .player-grid .manual-mini input,
+  .player-grid .manual-mini button{
+    height:30px;
+  }
+
 }
 </style>
 
@@ -2577,6 +2786,7 @@ function renderRoomsList(){
    ========================================================= */
 
 
+
 function renderPOS(){
 
   const total=
@@ -2615,17 +2825,13 @@ function renderPOS(){
 
   const selectedFromHtml=
     selectedFrom!==null
-
     ?
-
     `<option
       value="${selectedFrom}"
       selected>
       ${esc(fromName)}
     </option>`
-
     :
-
     `<option
       value=""
       selected
@@ -2636,17 +2842,13 @@ function renderPOS(){
 
   const selectedToHtml=
     selectedTo!==null
-
     ?
-
     `<option
       value="${selectedTo}"
       selected>
       ${esc(toName)}
     </option>`
-
     :
-
     `<option
       value=""
       selected
@@ -2808,144 +3010,147 @@ function renderPOS(){
 
         ?
 
-        players.map(p=>`
+        `
+        <div class="player-grid players-${players.length}">
 
-          <div
-            class="card player-card"
-            id="playerCard_${p.key}"
-            style="
-              margin-bottom:12px;
-              box-shadow:none;
-              border:1px solid #eee
-            ">
+          ${
+            players.map(p=>`
 
-            <div class="player-top">
+              <div
+                class="card player-card"
+                id="playerCard_${p.key}">
 
-              <div class="player-info">
+                <div class="player-top">
 
-                <div class="player-name-line">
+                  <div class="player-info">
 
-                  <div
-                    class="player-name"
-                    style="font-size:18px">
+                    <div class="player-name-line">
 
-                    ${esc(p.name)}
+                      <div
+                        class="player-name"
+                        style="font-size:18px">
 
-                  </div>
+                        ${esc(p.name)}
 
-
-                  <div class="player-mini-actions">
-
-                    <button
-                      class="mini-btn edit-mini"
-                      onclick="editPlayerName('${p.key}')"
-                      title="İsmi değiştir">
-
-                      ✏️
-
-                    </button>
+                      </div>
 
 
-                    <button
-                      class="mini-btn delete-mini"
-                      onclick="removePlayer('${p.key}')"
-                      title="Oyuncuyu sil">
+                      <div class="player-mini-actions">
 
-                      🗑️
+                        <button
+                          class="mini-btn edit-mini"
+                          onclick="editPlayerName('${p.key}')"
+                          title="İsmi değiştir">
 
-                    </button>
+                          ✏️
 
-                  </div>
-
-
-                  <div class="player-compact-actions">
-
-                    <button
-                      class="money-mini money-minus"
-                      onclick="removeMoney('${p.key}',2000000)"
-                      title="-2M">
-
-                      −2M
-
-                    </button>
+                        </button>
 
 
-                    <button
-                      class="money-mini money-minus"
-                      onclick="removeMoney('${p.key}',1000000)"
-                      title="-1M">
+                        <button
+                          class="mini-btn delete-mini"
+                          onclick="removePlayer('${p.key}')"
+                          title="Oyuncuyu sil">
 
-                      −1M
+                          🗑️
 
-                    </button>
+                        </button>
 
+                      </div>
 
-                    <button
-                      class="money-mini money-plus"
-                      onclick="addMoney('${p.key}',1000000)"
-                      title="+1M">
-
-                      +1M
-
-                    </button>
+                    </div>
 
 
-                    <button
-                      class="money-mini money-plus-strong"
-                      onclick="addMoney('${p.key}',2000000)"
-                      title="+2M">
-
-                      +2M
-
-                    </button>
-
-
-                    <div class="manual-mini">
+                    <div class="player-compact-actions">
 
                       <button
-                        class="money-minus"
-                        onclick="manualApply('${p.key}',-1)"
-                        title="Para çıkar">
+                        class="money-mini money-minus"
+                        onclick="removeMoney('${p.key}',2000000)"
+                        title="-2M">
 
-                        −
+                        −2M
 
                       </button>
 
 
-                      <input
-                        id="manualAmount_${p.key}"
-                        inputmode="numeric"
-                        placeholder="1.500"
-                        oninput="formatManualInput(this)">
-
-
                       <button
-                        class="money-plus"
-                        onclick="manualApply('${p.key}',1)"
-                        title="Para ekle">
+                        class="money-mini money-minus"
+                        onclick="removeMoney('${p.key}',1000000)"
+                        title="-1M">
 
-                        ＋
+                        −1M
 
                       </button>
 
+
+                      <button
+                        class="money-mini money-plus"
+                        onclick="addMoney('${p.key}',1000000)"
+                        title="+1M">
+
+                        +1M
+
+                      </button>
+
+
+                      <button
+                        class="money-mini money-plus-strong"
+                        onclick="addMoney('${p.key}',2000000)"
+                        title="+2M">
+
+                        +2M
+
+                      </button>
+
+
+                      <div class="manual-mini">
+
+                        <button
+                          class="money-minus"
+                          onclick="manualApply('${p.key}',-1)"
+                          title="Para çıkar">
+
+                          −
+
+                        </button>
+
+
+                        <input
+                          id="manualAmount_${p.key}"
+                          inputmode="numeric"
+                          placeholder="1.500"
+                          oninput="formatManualInput(this)">
+
+
+                        <button
+                          class="money-plus"
+                          onclick="manualApply('${p.key}',1)"
+                          title="Para ekle">
+
+                          ＋
+
+                        </button>
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="balance">
+                      ${fmt(p.balance)}
                     </div>
 
                   </div>
 
                 </div>
 
-
-                <div class="balance">
-                  ${fmt(p.balance)}
-                </div>
-
               </div>
 
-            </div>
+            `).join('')
+          }
 
-          </div>
-
-        `).join('')
+        </div>
+        `
 
         :
 
