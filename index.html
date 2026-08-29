@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4527A0">
+<title>Monopoly POS</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f5f7;color:#202124}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.appbar{height:64px;background:#fff;display:flex;align-items:center;padding:0 18px;box-shadow:0 1px 5px #0001;position:sticky;top:0;z-index:5}
+.appbar h1{font-size:19px;margin:0 0 0 10px}
+.appbar .status{margin-left:auto;font-size:12px;color:#777;display:flex;align-items:center;gap:6px}
+.appbar .dot{width:9px;height:9px;border-radius:50%;background:#ccc}
+.appbar .dot.on{background:#2e7d32}
+.appbar .reset{border:0;background:transparent;font-size:24px;margin-left:12px}
+main{max-width:650px;margin:auto;padding:16px 16px 90px}
+.card{background:#fff;border-radius:18px;margin-bottom:16px;padding:20px;box-shadow:0 1px 4px #0000000d}
+.total{color:#fff;text-align:center;padding:24px;background:linear-gradient(135deg,#4527a0,#7e57c2);border-radius:20px}
+.total .icon{font-size:42px}.total .label{font-size:13px;color:#ffffffbb;font-weight:bold;margin:10px}.total .money{font-size:30px;font-weight:bold}.total .players{color:#ffffffbb;margin-top:5px}
+.section-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:bold;margin-bottom:20px}
+.notice{padding:20px;background:#ff98001f;border-radius:15px;text-align:center}
+.field{margin-bottom:16px}
+label{display:block;font-size:13px;margin-bottom:7px;color:#555}
+input,select{width:100%;height:52px;border:1px solid #bbb;border-radius:10px;padding:0 14px;background:#fff}
+.helper{font-size:12px;color:#777;margin-top:6px}
+.arrow{text-align:center;font-size:26px;margin:0 0 16px}
+.quick-title{font-size:13px;font-weight:bold;margin:10px 0 8px}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.btn{border:0;border-radius:10px;padding:13px 8px;font-weight:bold}
+.outline{background:#fff;border:1px solid #aaa}.tonal{background:#eee8ff}.primary{background:#4527a0;color:#fff}
+.complete{width:100%;height:58px;margin-top:20px;font-size:16px}
+.summary-title{font-size:18px;font-weight:bold;margin-bottom:15px}
+.player-row{display:flex;align-items:center;padding:8px 0}
+.avatar{width:42px;height:42px;border-radius:50%;background:#e8defd;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:12px}
+.player-info{flex:1}.player-name{font-weight:bold}.balance{color:#2e7d32;font-weight:bold;margin-top:4px}
+.nav{position:fixed;bottom:0;left:0;right:0;height:70px;background:#fff;border-top:1px solid #ddd;display:flex;z-index:10}
+.nav button{flex:1;border:0;background:#fff;color:#555;font-size:12px}.nav button.active{color:#4527a0;font-weight:bold}
+.page{display:none}.page.active{display:block}
+.players-head{display:flex;align-items:center}.players-head>div{flex:1}.players-head h2,.history-title{margin:0 0 5px;font-size:25px}.players-head button{white-space:nowrap}
+.player-card{padding:16px}.player-top{display:flex;align-items:center}.menu{border:0;background:transparent;font-size:23px}
+.player-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
+.progress{height:7px;background:#ddd;border-radius:10px;margin-top:14px;overflow:hidden}.progress span{display:block;height:100%;background:#4527a0}
+.empty{text-align:center;padding:40px}.empty .big{font-size:55px}
+.history-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #eee}.history-item:last-child{border:0}.history-main{flex:1}.history-main b{display:block}.history-time{font-size:12px;color:#777;margin-top:5px}.history-amount{font-weight:bold}
+dialog{border:0;border-radius:18px;padding:0;width:min(430px,calc(100% - 32px));box-shadow:0 10px 50px #0004}dialog::backdrop{background:#0006}.dialog-body{padding:22px}.dialog-body h3{margin-top:0}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.toast{position:fixed;left:50%;bottom:85px;transform:translateX(-50%);background:#333;color:#fff;padding:13px 18px;border-radius:10px;z-index:20;display:none;max-width:90%;text-align:center}.toast.show{display:block}
+@media(max-width:480px){main{padding:12px 12px 90px}.quick button{font-size:13px}.players-head button{padding:11px 10px}.appbar h1{font-size:17px}}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <span style="font-size:25px">💳</span><h1>MONOPOLY POS</h1>
+  <span class="status"><span id="connDot" class="dot"></span><span id="connText">bağlanıyor...</span></span>
+  <button class="reset" onclick="resetGame()" title="Oyunu sıfırla">↻</button>
+</header>
+
+<main>
+  <section id="posPage" class="page active"></section>
+  <section id="playersPage" class="page"></section>
+  <section id="historyPage" class="page"></section>
+</main>
+
+<nav class="nav">
+  <button id="nav0" class="active" onclick="showPage(0)">💳<br>POS</button>
+  <button id="nav1" onclick="showPage(1)">👥<br>Oyuncular</button>
+  <button id="nav2" onclick="showPage(2)">🧾<br>Geçmiş</button>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<dialog id="playerDialog">
+  <div class="dialog-body">
+    <h3>Oyuncu Ekle</h3>
+    <input id="playerName" placeholder="Oyuncu adı (Örn: Batuhan)" autofocus>
+    <div class="dialog-actions">
+      <button class="btn outline" onclick="closeDialog('playerDialog')">İptal</button>
+      <button class="btn primary" onclick="addPlayer()">Ekle</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="customDialog">
+  <div class="dialog-body">
+    <h3 id="customTitle">Para Ekle</h3>
+    <input id="customAmount" inputmode="numeric" placeholder="Örn: 1.500">
+    <div class="helper">1.500 = 1.500.000 ₺</div>
+    <div class="dialog-actions">
+      <button class="btn outline" onclick="closeDialog('customDialog')">İptal</button>
+      <button class="btn primary" onclick="customAdd()">Ekle</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- ============================================================ -->
+<!-- FIREBASE AYARLARI - Kendi projenin bilgilerini buraya yapıştır -->
+<!-- Firebase Console > Project Settings > General > Your apps    -->
+<!-- ============================================================ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBMEibjwgJ-KHnwW-8r11C3EeV3Ef5ZDgs",
+  authDomain: "monopoly-40fcc.firebaseapp.com",
+  databaseURL: "https://monopoly-40fcc-default-rtdb.firebaseio.com",
+  projectId: "monopoly-40fcc",
+  storageBucket: "monopoly-40fcc.firebasestorage.app",
+  messagingSenderId: "1026313997419",
+  appId: "1:1026313997419:web:c731f4331e346ab5a2b52e",
+  measurementId: "G-93JH0GJ4HT"
+};
+
+// Aynı anda birden fazla masa/oyun oynanacaksa bu odayı değiştirerek
+// birbirinden bağımsız oyunlar oluşturabilirsiniz (örn: "masa2").
+const ROOM = "masa1";
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const gameRef = db.ref('rooms/' + ROOM);
+</script>
+<!-- ============================================================ -->
+
+<script>
+// playersObj / transactionsObj: Firebase'den gelen ham veri (key -> obje).
+// players / transactions: ekranda kullanılan, sıralanmış diziler.
+let playersObj={};
+let transactionsObj={};
+let players=[];        // [{key,name,balance}]
+let transactions=[];   // [{key,from,to,amount,time}]
+let selectedFrom=null;  // artık index değil, Firebase key (string)
+let selectedTo=null;
+let currentPage=0;
+let customPlayerKey=null;
+
+const connDot=document.getElementById('connDot');
+const connText=document.getElementById('connText');
+db.ref('.info/connected').on('value',snap=>{
+  if(snap.val()===true){connDot.classList.add('on');connText.textContent='bağlı';}
+  else{connDot.classList.remove('on');connText.textContent='bağlantı kesildi';}
+});
+
+gameRef.on('value',(snap)=>{
+  const data=snap.val()||{};
+  playersObj=data.players||{};
+  transactionsObj=data.transactions||{};
+
+  players=Object.keys(playersObj).sort().map(k=>({key:k,...playersObj[k]}));
+  transactions=Object.keys(transactionsObj).sort().reverse().map(k=>({key:k,...transactionsObj[k]}));
+
+  if(selectedFrom!==null && !playersObj[selectedFrom])selectedFrom=null;
+  if(selectedTo!==null && !playersObj[selectedTo])selectedTo=null;
+
+  render();
+});
+
+const fmt = n => n.toLocaleString('tr-TR') + ' ₺';
+const inputFmt = n => n.toLocaleString('tr-TR');
+
+function toast(msg,success=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.background=success?'#2e7d32':'#333';t.classList.add('show');
+  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function showPage(i){
+  currentPage=i;
+  document.querySelectorAll('.page').forEach((x,j)=>x.classList.toggle('active',j===i));
+  document.querySelectorAll('.nav button').forEach((x,j)=>x.classList.toggle('active',j===i));
+  render();
+}
+
+function addPlayer(){
+  if(players.length>=6){toast('En fazla 6 oyuncu ekleyebilirsin.');return}
+  const name=document.getElementById('playerName').value.trim();
+  if(!name){toast('Oyuncu adı gir.');return}
+  gameRef.child('players').push({name,balance:15000000});
+  document.getElementById('playerName').value='';
+  closeDialog('playerDialog');toast(name+' eklendi.',true);
+}
+
+function openPlayerDialog(){document.getElementById('playerName').value='';document.getElementById('playerDialog').showModal()}
+function closeDialog(id){document.getElementById(id).close()}
+
+function removePlayer(key){
+  const p=playersObj[key];
+  if(!p)return;
+  if(!confirm(p.name+' oyuncusunu silmek istiyor musun?'))return;
+  gameRef.child('players').child(key).remove();
+  if(selectedFrom===key)selectedFrom=null;
+  if(selectedTo===key)selectedTo=null;
+}
+
+function amountFromInput(){
+  const raw=document.getElementById('amount').value.replace(/\./g,'').replace(/,/g,'').trim();
+  const n=parseInt(raw);
+  return (!n||n<=0)?null:n*1000;
+}
+
+function transferMoney(){
+  if(selectedFrom===null||selectedTo===null){toast('Gönderen ve alıcı oyuncuyu seç.');return}
+  if(selectedFrom===selectedTo){toast('Oyuncu kendisine para gönderemez.');return}
+  const amount=amountFromInput();
+  if(!amount){toast('Geçerli bir tutar gir.');return}
+  const from=playersObj[selectedFrom],to=playersObj[selectedTo];
+  if(!from||!to)return;
+  if(amount>from.balance){toast('Gönderen oyuncunun bakiyesi yetersiz.');return}
+  const txKey=gameRef.child('transactions').push().key;
+  const updates={};
+  updates['players/'+selectedFrom+'/balance']=from.balance-amount;
+  updates['players/'+selectedTo+'/balance']=to.balance+amount;
+  updates['transactions/'+txKey]={from:from.name,to:to.name,amount,time:Date.now()};
+  gameRef.update(updates);
+  document.getElementById('amount').value='';
+  window.amountValue='';
+  toast(fmt(amount)+' transfer edildi.',true);
+}
+
+function changeAmount(value){
+  const el=document.getElementById('amount');
+  let current=parseInt(el.value.replace(/\./g,'').replace(/,/g,''))||0;
+  current+=value;if(current<0)current=0;
+  el.value=current?inputFmt(current):'';
+  window.amountValue=el.value;
+}
+
+function addMoney(key,amount){
+  const p=playersObj[key];if(!p)return;
+  gameRef.child('players').child(key).child('balance').set(p.balance+amount);
+  toast(p.name+' hesabına '+fmt(amount)+' eklendi.',true);
+}
+function removeMoney(key,amount){
+  const p=playersObj[key];if(!p)return;
+  if(p.balance<amount){toast(p.name+' oyuncusunun bakiyesi yetersiz.');return}
+  gameRef.child('players').child(key).child('balance').set(p.balance-amount);
+  toast(p.name+' hesabından '+fmt(amount)+' çıkarıldı.',true);
+}
+
+function openCustom(key){
+  customPlayerKey=key;
+  document.getElementById('customTitle').textContent=playersObj[key].name+' - Para Ekle';
+  document.getElementById('customAmount').value='';
+  document.getElementById('customDialog').showModal();
+}
+
+function customAdd(){
+  const n=parseInt(document.getElementById('customAmount').value.replace(/\./g,'').replace(/,/g,''));
+  if(!n||n<=0){toast('Geçerli bir tutar gir.');return}
+  const amount=n*1000;
+  addMoney(customPlayerKey,amount);
+  closeDialog('customDialog');
+}
+
+function resetGame(){
+  if(!players.length&&!transactions.length)return;
+  if(!confirm('Tüm oyuncular ve işlem geçmişi silinecek. Emin misin?'))return;
+  gameRef.remove();selectedFrom=null;selectedTo=null;toast('Oyun sıfırlandı.',true);
+}
+
+function render(){
+  renderPOS();renderPlayers();renderHistory();
+}
+
+function renderPOS(){
+  const total=players.reduce((s,p)=>s+p.balance,0);
+  const options=players.map(p=>`<option value="${p.key}">${esc(p.name)} - ${fmt(p.balance)}</option>`).join('');
+  const fromName=selectedFrom&&playersObj[selectedFrom]?playersObj[selectedFrom].name:'';
+  const toName=selectedTo&&playersObj[selectedTo]?playersObj[selectedTo].name:'';
+  const selectedFromHtml=selectedFrom!==null?`<option value="${selectedFrom}" selected>${esc(fromName)}</option>`:'<option value="" selected disabled>Oyuncu seç</option>';
+  const selectedToHtml=selectedTo!==null?`<option value="${selectedTo}" selected>${esc(toName)}</option>`:'<option value="" selected disabled>Oyuncu seç</option>';
+
+  document.getElementById('posPage').innerHTML=`
+    <div class="total">
+      <div class="icon">💰</div><div class="label">MASADAKİ TOPLAM PARA</div>
+      <div class="money">${fmt(total)}</div><div class="players">${players.length}/6 oyuncu</div>
+    </div>
+    <div class="card">
+      <div class="section-title">↔️ PARA TRANSFERİ</div>
+      ${players.length<2?`<div class="notice">👥<br><br>Transfer yapmak için en az 2 oyuncu gerekli.</div>`:`
+        <div class="field"><label>Para Gönderen</label>
+          <select id="fromSelect" onchange="selectedFrom=this.value===''?null:this.value;render()">${selectedFromHtml}${options}</select>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="field"><label>Para Alacak</label>
+          <select id="toSelect" onchange="selectedTo=this.value===''?null:this.value;render()">${selectedToHtml}${options}</select>
+        </div>
+        <div class="field">
+          <label>Transfer Tutarı</label>
+          <input id="amount" inputmode="numeric" placeholder="Örn: 1.500" value="${window.amountValue||''}" oninput="formatAmountInput(this)">
+          <div class="helper">1.500 = 1.500.000 ₺</div>
+        </div>
+        <div class="quick-title">HIZLI TUTAR</div>
+        <div class="quick">
+          <button class="btn outline" onclick="changeAmount(-2000)">− 2M</button>
+          <button class="btn outline" onclick="changeAmount(-1000)">− 1M</button>
+          <button class="btn tonal" onclick="changeAmount(1000)">+ 1M</button>
+          <button class="btn primary" onclick="changeAmount(2000)">+ 2M</button>
+        </div>
+        <button class="btn primary complete" onclick="transferMoney()">💳 ÖDEMEYİ TAMAMLA</button>
+      `}
+    </div>
+    <div class="card">
+      <div class="summary-title">OYUNCU BAKİYELERİ</div>
+      ${players.length?players.map(p=>`
+        <div class="player-row">
+          <div class="avatar">${esc(p.name[0].toUpperCase())}</div>
+          <div class="player-info"><div class="player-name">${esc(p.name)}</div><div class="balance">${fmt(p.balance)}</div></div>
+        </div>`).join(''):'<div style="text-align:center;padding:20px">Henüz oyuncu eklenmedi.</div>'}
+    </div>`;
+  if(window.amountValue===undefined)window.amountValue='';
+}
+
+function formatAmountInput(el){
+  const clean=el.value.replace(/\D/g,'');
+  const formatted=clean?inputFmt(parseInt(clean)):'';
+  el.value=formatted;window.amountValue=formatted;
+}
+
+function renderPlayers(){
+  document.getElementById('playersPage').innerHTML=`
+    <div class="card players-head">
+      <div><h2>Oyuncular</h2><span>${players.length}/6 oyuncu</span></div>
+      <button class="btn primary" onclick="openPlayerDialog()" ${players.length>=6?'disabled':''}>＋ Oyuncu Ekle</button>
+    </div>
+    ${players.length?players.map(p=>`
+      <div class="card player-card">
+        <div class="player-top">
+          <div class="avatar">${esc(p.name[0].toUpperCase())}</div>
+          <div class="player-info"><div class="player-name" style="font-size:18px">${esc(p.name)}</div><div class="balance">${fmt(p.balance)}</div></div>
+          <button class="menu" onclick="openPlayerMenu('${p.key}')">⋮</button>
+        </div>
+        <div class="player-actions">
+          <button class="btn outline" onclick="removeMoney('${p.key}',2000000)">−2M</button>
+          <button class="btn outline" onclick="removeMoney('${p.key}',1000000)">−1M</button>
+          <button class="btn tonal" onclick="addMoney('${p.key}',1000000)">＋1M</button>
+          <button class="btn primary" onclick="addMoney('${p.key}',2000000)">＋2M</button>
+        </div>
+        <div class="progress"><span style="width:${Math.min(Math.max(p.balance/30000000,0),1)*100}%"></span></div>
+      </div>`).join(''):`<div class="card empty"><div class="big">👥</div><h3>Henüz oyuncu yok.</h3><button class="btn primary" onclick="openPlayerDialog()">＋ İlk Oyuncuyu Ekle</button></div>`}`;
+}
+
+function openPlayerMenu(key){
+  const choice=prompt('1: +1M\\n2: +2M\\n3: -1M\\n4: -2M\\n5: Özel tutar ekle\\n6: Oyuncuyu sil');
+  if(choice==='1')addMoney(key,1000000);
+  else if(choice==='2')addMoney(key,2000000);
+  else if(choice==='3')removeMoney(key,1000000);
+  else if(choice==='4')removeMoney(key,2000000);
+  else if(choice==='5')openCustom(key);
+  else if(choice==='6')removePlayer(key);
+}
+
+function renderHistory(){
+  document.getElementById('historyPage').innerHTML=`
+    <div class="history-title">İşlem Geçmişi</div>
+    <div class="card">
+      ${transactions.length?transactions.map(t=>{
+        const time=new Date(t.time).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+        return `<div class="history-item"><div class="avatar">↔</div><div class="history-main"><b>${esc(t.from)} → ${esc(t.to)}</b><div class="history-time">${time}</div></div><div class="history-amount">${fmt(t.amount)}</div></div>`;
+      }).join(''):`<div class="empty"><div class="big">🧾</div><div>Henüz işlem yapılmadı.</div></div>`}
+    </div>`;
+}
+
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+
+document.getElementById('playerName').addEventListener('keydown',e=>{if(e.key==='Enter')addPlayer()});
+document.getElementById('customAmount').addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').replace(/\B(?=(\d{3})+(?!\d))/g,'.')});
+render();
+</script>
+</body>
+</html>
