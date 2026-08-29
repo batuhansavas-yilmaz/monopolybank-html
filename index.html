@@ -5,610 +5,3180 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4527A0">
 <title>Monopoly</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f5f7;color:#202124}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f5f5f7;
+  color:#202124
+}
+
 button,input,select{font:inherit}
 button{cursor:pointer}
-.appbar{height:64px;background:#fff;display:flex;align-items:center;padding:0 18px;box-shadow:0 1px 5px #0001;position:sticky;top:0;z-index:5}
-.appbar h1{font-size:19px;margin:0 0 0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.appbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.appbar .status{font-size:12px;color:#777;display:flex;align-items:center;gap:6px}
-.appbar .dot{width:9px;height:9px;border-radius:50%;background:#ccc}
-.appbar .dot.on{background:#2e7d32}
-.appbar .iconbtn{border:0;background:transparent;font-size:22px;padding:4px 6px}
-main{max-width:650px;margin:auto;padding:16px 16px 90px}
-.card{background:#fff;border-radius:18px;margin-bottom:16px;padding:20px;box-shadow:0 1px 4px #0000000d}
-.total{color:#fff;text-align:center;padding:24px;background:linear-gradient(135deg,#4527a0,#7e57c2);border-radius:20px}
-.total .icon{font-size:42px}.total .label{font-size:13px;color:#ffffffbb;font-weight:bold;margin:10px}.total .money{font-size:30px;font-weight:bold}.total .players{color:#ffffffbb;margin-top:5px}
-.section-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:bold;margin-bottom:20px}
-.notice{padding:20px;background:#ff98001f;border-radius:15px;text-align:center}
-.field{margin-bottom:16px}
-label{display:block;font-size:13px;margin-bottom:7px;color:#555}
-input,select{width:100%;height:52px;border:1px solid #bbb;border-radius:10px;padding:0 14px;background:#fff}
-.helper{font-size:12px;color:#777;margin-top:6px}
-.arrow{text-align:center;font-size:26px;margin:0 0 16px}
-.quick-title{font-size:13px;font-weight:bold;margin:10px 0 8px}
-.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.btn{border:0;border-radius:10px;padding:13px 8px;font-weight:bold}
-.outline{background:#fff;border:1px solid #aaa}.tonal{background:#eee8ff}.primary{background:#4527a0;color:#fff}
-.complete{width:100%;height:58px;margin-top:20px;font-size:16px}
-.summary-title{font-size:18px;font-weight:bold;margin-bottom:15px}
-.player-row{display:flex;align-items:center;padding:8px 0}
-.avatar{width:42px;height:42px;border-radius:50%;background:#e8defd;display:flex;align-items:center;justify-content:center;font-weight:bold;margin-right:12px;flex-shrink:0}
-.player-info{flex:1;min-width:0}.player-name{font-weight:bold}.balance{color:#2e7d32;font-weight:bold;margin-top:4px}
-.nav{position:fixed;bottom:0;left:0;right:0;height:70px;background:#fff;border-top:1px solid #ddd;display:flex;z-index:10}
-.nav button{flex:1;border:0;background:#fff;color:#555;font-size:12px}.nav button.active{color:#4527a0;font-weight:bold}
-.page{display:none}.page.active{display:block}
-.players-head{display:flex;align-items:center}.players-head>div{flex:1}.players-head h2,.history-title{margin:0 0 5px;font-size:25px}.players-head button{white-space:nowrap}
-.player-card{padding:16px}.player-top{display:flex;align-items:center}.menu{border:0;background:transparent;font-size:23px}
-.player-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
-.progress{height:7px;background:#ddd;border-radius:10px;margin-top:14px;overflow:hidden}.progress span{display:block;height:100%;background:#4527a0}
-.empty{text-align:center;padding:40px}.empty .big{font-size:55px}
-.history-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #eee}.history-item:last-child{border:0}.history-main{flex:1}.history-main b{display:block}.history-time{font-size:12px;color:#777;margin-top:5px}.history-amount{font-weight:bold}
-dialog{border:0;border-radius:18px;padding:0;width:min(430px,calc(100% - 32px));box-shadow:0 10px 50px #0004}dialog::backdrop{background:#0006}.dialog-body{padding:22px}.dialog-body h3{margin-top:0}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;flex-wrap:wrap}
-.toast{position:fixed;left:50%;bottom:85px;transform:translateX(-50%);background:#333;color:#fff;padding:13px 18px;border-radius:10px;z-index:20;display:none;max-width:90%;text-align:center}.toast.show{display:block}
-@media(max-width:480px){main{padding:12px 12px 90px}.quick button{font-size:13px}.players-head button{padding:11px 10px}.appbar h1{font-size:17px}}
 
-.player-manage{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.manual-row{margin-top:8px;display:flex;gap:6px}
-.manual-row .btn{flex:0 0 52px;font-size:20px;padding:0}
-.manual-row input{flex:1;height:46px;text-align:center}
+.appbar{
+  height:64px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  padding:0 18px;
+  box-shadow:0 1px 5px #0001;
+  position:sticky;
+  top:0;
+  z-index:5
+}
 
-.rename-input{width:100%;height:44px;border:1px solid #aaa;border-radius:10px;padding:0 12px;font-size:16px;font-weight:bold}
+.appbar h1{
+  font-size:19px;
+  margin:0 0 0 10px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
 
-.danger{background:#ffebee;color:#c62828;border:1px solid #ef9a9a}
-.success{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
-.lock{font-size:13px;color:#777}
+.appbar-right{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:10px
+}
+
+.appbar .status{
+  font-size:12px;
+  color:#777;
+  display:flex;
+  align-items:center;
+  gap:6px
+}
+
+.appbar .dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#ccc
+}
+
+.appbar .dot.on{
+  background:#2e7d32
+}
+
+.appbar .iconbtn{
+  border:0;
+  background:transparent;
+  font-size:22px;
+  padding:4px 6px
+}
+
+.appbar .add-player-btn{
+  border:0;
+  background:#4527a0;
+  color:#fff;
+  border-radius:10px;
+  padding:9px 12px;
+  font-weight:bold;
+  font-size:13px
+}
+
+main{
+  max-width:650px;
+  margin:auto;
+  padding:16px 16px 90px
+}
+
+.card{
+  background:#fff;
+  border-radius:18px;
+  margin-bottom:16px;
+  padding:20px;
+  box-shadow:0 1px 4px #0000000d
+}
+
+.total{
+  color:#fff;
+  text-align:center;
+  padding:24px;
+  background:linear-gradient(135deg,#4527a0,#7e57c2);
+  border-radius:20px;
+  margin-bottom:16px;
+}
+
+.total .icon{
+  font-size:42px
+}
+
+.total .label{
+  font-size:13px;
+  color:#ffffffbb;
+  font-weight:bold;
+  margin:10px
+}
+
+.total .money{
+  font-size:30px;
+  font-weight:bold
+}
+
+.total .players{
+  color:#ffffffbb;
+  margin-top:5px
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:20px
+}
+
+.notice{
+  padding:20px;
+  background:#ff98001f;
+  border-radius:15px;
+  text-align:center
+}
+
+.field{
+  margin-bottom:16px
+}
+
+label{
+  display:block;
+  font-size:13px;
+  margin-bottom:7px;
+  color:#555
+}
+
+input,select{
+  width:100%;
+  height:52px;
+  border:1px solid #bbb;
+  border-radius:10px;
+  padding:0 14px;
+  background:#fff
+}
+
+.helper{
+  font-size:12px;
+  color:#777;
+  margin-top:6px
+}
+
+.arrow{
+  text-align:center;
+  font-size:26px;
+  margin:0 0 16px
+}
+
+.quick-title{
+  font-size:13px;
+  font-weight:bold;
+  margin:10px 0 8px
+}
+
+.quick{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px
+}
+
+.btn{
+  border:0;
+  border-radius:10px;
+  padding:13px 8px;
+  font-weight:bold
+}
+
+.outline{
+  background:#fff;
+  border:1px solid #aaa
+}
+
+.tonal{
+  background:#eee8ff
+}
+
+.primary{
+  background:#4527a0;
+  color:#fff
+}
+
+.complete{
+  width:100%;
+  height:58px;
+  margin-top:20px;
+  font-size:16px
+}
+
+.summary-title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:15px
+}
+
+.player-card{
+  padding:16px
+}
+
+.player-top{
+  display:flex;
+  align-items:center
+}
+
+.player-info{
+  flex:1;
+  min-width:0
+}
+
+.player-name{
+  font-weight:bold
+}
+
+.balance{
+  color:#2e7d32;
+  font-weight:bold;
+  margin-top:4px
+}
+
+.player-actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:14px
+}
+
+.player-manage{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px
+}
+
+.manual-row{
+  margin-top:8px;
+  display:flex;
+  gap:6px
+}
+
+.manual-row .btn{
+  flex:0 0 52px;
+  font-size:20px;
+  padding:0
+}
+
+.manual-row input{
+  flex:1;
+  height:46px;
+  text-align:center
+}
+
+.rename-input{
+  width:100%;
+  height:44px;
+  border:1px solid #aaa;
+  border-radius:10px;
+  padding:0 12px;
+  font-size:16px;
+  font-weight:bold
+}
+
+.danger{
+  background:#ffebee;
+  color:#c62828;
+  border:1px solid #ef9a9a
+}
+
+.success{
+  background:#e8f5e9;
+  color:#2e7d32;
+  border:1px solid #a5d6a7
+}
+
+.lock{
+  font-size:13px;
+  color:#777
+}
+
+.player-name-line{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0
+}
+
+.player-name-line .player-name{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+
+.player-mini-actions{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  flex-shrink:0
+}
+
+.mini-btn{
+  width:27px;
+  height:27px;
+  padding:0;
+  border:0;
+  border-radius:7px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  line-height:1
+}
+
+.edit-mini{
+  background:#eee8ff
+}
+
+.delete-mini{
+  background:#ffebee
+}
+
+.player-compact-actions{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  margin-left:auto;
+  flex-shrink:0
+}
+
+.money-mini{
+  width:30px;
+  height:28px;
+  padding:0;
+  border:0;
+  border-radius:7px;
+  font-size:12px;
+  font-weight:bold
+}
+
+.money-minus{
+  background:#f4f4f4;
+  border:1px solid #aaa
+}
+
+.money-plus{
+  background:#eee8ff
+}
+
+.money-plus-strong{
+  background:#4527a0;
+  color:#fff
+}
+
+.manual-mini{
+  display:flex;
+  align-items:center;
+  gap:3px;
+  margin-left:3px
+}
+
+.manual-mini input{
+  width:72px;
+  height:28px;
+  border:1px solid #bbb;
+  border-radius:7px;
+  padding:0 6px;
+  font-size:11px;
+  text-align:center
+}
+
+.manual-mini button{
+  width:28px;
+  height:28px;
+  padding:0;
+  border:0;
+  border-radius:7px;
+  font-size:15px;
+  font-weight:bold
+}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:70px;
+  background:#fff;
+  border-top:1px solid #ddd;
+  display:flex;
+  z-index:10
+}
+
+.nav button{
+  flex:1;
+  border:0;
+  background:#fff;
+  color:#555;
+  font-size:12px
+}
+
+.nav button.active{
+  color:#4527a0;
+  font-weight:bold
+}
+
+.page{
+  display:none
+}
+
+.page.active{
+  display:block
+}
+
+.players-head{
+  display:flex;
+  align-items:center
+}
+
+.players-head>div{
+  flex:1
+}
+
+.players-head h2,
+.history-title{
+  margin:0 0 5px;
+  font-size:25px
+}
+
+.players-head button{
+  white-space:nowrap
+}
+
+.empty{
+  text-align:center;
+  padding:40px
+}
+
+.empty .big{
+  font-size:55px
+}
+
+.history-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 0;
+  border-bottom:1px solid #eee
+}
+
+.history-item:last-child{
+  border:0
+}
+
+.history-main{
+  flex:1
+}
+
+.history-main b{
+  display:block
+}
+
+.history-time{
+  font-size:12px;
+  color:#777;
+  margin-top:5px
+}
+
+.history-amount{
+  font-weight:bold
+}
+
+.avatar{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#e8defd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  flex-shrink:0
+}
+
+dialog{
+  border:0;
+  border-radius:18px;
+  padding:0;
+  width:min(430px,calc(100% - 32px));
+  box-shadow:0 10px 50px #0004
+}
+
+dialog::backdrop{
+  background:#0006
+}
+
+.dialog-body{
+  padding:22px
+}
+
+.dialog-body h3{
+  margin-top:0
+}
+
+.dialog-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:18px;
+  flex-wrap:wrap
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:85px;
+  transform:translateX(-50%);
+  background:#333;
+  color:#fff;
+  padding:13px 18px;
+  border-radius:10px;
+  z-index:20;
+  display:none;
+  max-width:90%;
+  text-align:center
+}
+
+.toast.show{
+  display:block
+}
+
+
+/* =========================================================
+   TELEFON GÖRÜNÜMÜ
+   ========================================================= */
+
+@media(max-width:480px){
+
+  main{
+    padding:12px 12px 90px
+  }
+
+  .quick button{
+    font-size:13px
+  }
+
+  .appbar h1{
+    font-size:17px
+  }
+
+  .appbar{
+    padding:0 12px
+  }
+
+  .appbar .add-player-btn{
+    padding:8px 9px;
+    font-size:12px
+  }
+
+  .appbar .status{
+    font-size:11px
+  }
+
+
+  /* OYUNCU KARTI */
+
+  .player-card{
+    padding:14px
+  }
+
+  /*
+     Avatar oyuncu kartından kaldırıldığı için
+     player-top artık tam genişliği kullanıyor.
+  */
+
+  .player-top{
+    align-items:flex-start
+  }
+
+  .player-info{
+    min-width:0;
+    width:100%
+  }
+
+
+  /* Oyuncu adı + kalem + çöp kutusu */
+
+  .player-name-line{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    width:100%;
+    gap:5px
+  }
+
+  .player-name-line .player-name{
+    flex:1 1 auto;
+    min-width:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:17px !important
+  }
+
+  .player-mini-actions{
+    display:flex;
+    flex:0 0 auto;
+    gap:4px
+  }
+
+  .mini-btn{
+    width:30px;
+    height:30px
+  }
+
+
+  /* Para butonlarını ikinci satıra indir */
+
+  .player-compact-actions{
+    width:100%;
+    flex:0 0 100%;
+    margin:8px 0 0 0;
+
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:4px
+  }
+
+  .money-mini{
+    flex:0 0 38px;
+    width:38px;
+    height:32px;
+    font-size:11px;
+    padding:0
+  }
+
+
+  /* Manuel para alanı sağ tarafa */
+
+  .manual-mini{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    margin-left:auto;
+    flex:0 0 auto
+  }
+
+  .manual-mini input{
+    width:70px;
+    height:32px;
+    font-size:11px;
+    padding:0 5px
+  }
+
+  .manual-mini button{
+    flex:0 0 32px;
+    width:32px;
+    height:32px
+  }
+
+
+  /* Bakiye */
+
+  .balance{
+    font-size:16px;
+    margin-top:8px;
+    white-space:nowrap
+  }
+
+
+  /* Oyuncu yönetim butonları */
+
+  .player-manage{
+    grid-template-columns:1fr 1fr;
+    gap:8px
+  }
+
+
+  /* Masa başlığı */
+
+  .players-head{
+    gap:8px
+  }
+
+  .players-head h2,
+  .history-title{
+    font-size:22px
+  }
+
+
+  /* Transfer alanı */
+
+  .quick{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+
+  /* GEÇMİŞ
+     Avatarlar özellikle burada korunuyor */
+
+  .history-item{
+    gap:10px
+  }
+
+  .history-item .avatar{
+    width:42px;
+    height:42px;
+    flex:0 0 42px
+  }
+
+  .history-main{
+    min-width:0
+  }
+
+  .history-main b{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis
+  }
+
+  .history-amount{
+    font-size:13px;
+    white-space:nowrap
+  }
+/* iPhone SE / dar ekran optimizasyonu */
+@media(max-width:390px){
+
+  main{
+    padding:10px 8px 82px;
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  .card{
+    padding:14px;
+    border-radius:14px;
+  }
+
+  /* Üst bar */
+  .appbar{
+    padding:0 8px;
+    gap:4px;
+  }
+
+  .appbar h1{
+    font-size:15px;
+    margin-left:5px;
+  }
+
+  .appbar > span{
+    font-size:20px !important;
+  }
+
+  .appbar-right{
+    gap:4px;
+  }
+
+  .appbar .status{
+    font-size:9px;
+    gap:3px;
+  }
+
+  .appbar .dot{
+    width:7px;
+    height:7px;
+  }
+
+  .appbar .add-player-btn{
+    padding:7px 7px;
+    font-size:10px;
+    border-radius:8px;
+  }
+
+  .appbar .iconbtn{
+    font-size:18px;
+    padding:3px;
+  }
+
+  /* Oyuncu kartı */
+  .player-card{
+    padding:11px;
+    width:100%;
+    max-width:100%;
+    overflow:hidden;
+  }
+
+  .player-info{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+  }
+
+  .player-name-line{
+    width:100%;
+    max-width:100%;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:4px;
+  }
+
+  .player-name-line .player-name{
+    min-width:0;
+    max-width:100%;
+    font-size:16px !important;
+  }
+
+  .player-mini-actions{
+    gap:3px;
+  }
+
+  .mini-btn{
+    width:27px;
+    height:27px;
+    font-size:12px;
+  }
+
+  /* Para butonları */
+  .player-compact-actions{
+    grid-column:1 / -1;
+    width:100%;
+    min-width:0;
+    margin:5px 0 0;
+    display:flex;
+    gap:3px;
+    overflow:hidden;
+  }
+
+  .money-mini{
+    flex:1 1 0;
+    width:auto;
+    min-width:0;
+    height:30px;
+    font-size:10px;
+  }
+
+  /* Manuel para alanı */
+  .manual-mini{
+    margin-left:auto;
+    gap:3px;
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .manual-mini input{
+    width:0;
+    min-width:0;
+    flex:1 1 auto;
+    height:30px;
+    font-size:10px;
+    padding:0 3px;
+  }
+
+  .manual-mini button{
+    flex:0 0 30px;
+    width:30px;
+    height:30px;
+    font-size:14px;
+  }
+
+  .balance{
+    font-size:15px;
+    margin-top:7px;
+  }
+
+  /* Toplam para kartı */
+  .total{
+    padding:18px 10px;
+  }
+
+  .total .icon{
+    font-size:34px;
+  }
+
+  .total .money{
+    font-size:25px;
+  }
+
+  .total .label{
+    font-size:11px;
+  }
+
+  .total .players{
+    font-size:12px;
+  }
+
+  /* Transfer butonları */
+  .quick{
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+  }
+
+  .quick .btn{
+    padding:11px 5px;
+    font-size:12px;
+  }
+
+  /* Oyuncu yönetimi */
+  .player-manage{
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+  }
+
+  .player-manage .btn{
+    padding:11px 5px;
+    font-size:12px;
+  }
+
+  /* Transfer formu */
+  input,
+  select{
+    height:48px;
+    font-size:14px;
+  }
+
+  .complete{
+    height:54px;
+    font-size:14px;
+  }
+
+  /* Başlıklar */
+  .players-head h2,
+  .history-title{
+    font-size:20px;
+  }
+
+  .players-head{
+    gap:5px;
+  }
+
+  .players-head button{
+    padding:10px 8px;
+    font-size:11px;
+  }
+
+  /* Geçmiş */
+  .history-item{
+    gap:7px;
+  }
+
+  .history-main{
+    min-width:0;
+  }
+
+  .history-main b{
+    font-size:13px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .history-amount{
+    font-size:12px;
+    white-space:nowrap;
+  }
+}
+}
 </style>
+
 </head>
+
 <body>
 
 <header class="appbar">
-  <button id="backBtn" class="iconbtn" onclick="leaveRoom()" title="Odalara dön" style="display:none">◀️</button>
 
-  <span style="font-size:25px">🎲🎩</span><h1 id="appTitle">MONOPOLY</h1>
+  <button
+    id="backBtn"
+    class="iconbtn"
+    onclick="leaveRoom()"
+    title="Masalara dön"
+    style="display:none">
+    ◀️
+  </button>
+
+<span id="appLogo" style="font-size:25px">🎲🎩</span>
+<h1 id="appTitle">MONOPOLY</h1>
 
   <div class="appbar-right">
-    <span class="status"><span id="connDot" class="dot"></span><span id="connText">Bağlanıyor...</span></span>
-    <button id="resetBtn" class="iconbtn" onclick="resetGame()" title="Oyunu sıfırla" style="display:none">↻</button>
+
+    <button
+      id="playerAddBtn"
+      class="add-player-btn"
+      onclick="openPlayerDialog()"
+      style="display:none">
+      ＋ Oyuncu
+    </button>
+
+    <span class="status">
+      <span id="connDot" class="dot"></span>
+      <span id="connText">Bağlanıyor...</span>
+    </span>
+
+    <button
+      id="resetBtn"
+      class="iconbtn"
+      onclick="resetGame()"
+      title="Oyunu sıfırla"
+      style="display:none">
+      ↻
+    </button>
+
   </div>
 </header>
 
+
 <main>
+
   <section id="roomsPage" class="page active"></section>
+
   <section id="posPage" class="page"></section>
-  <section id="playersPage" class="page"></section>
+
   <section id="historyPage" class="page"></section>
+
 </main>
 
+
 <nav id="mainNav" class="nav" style="display:none">
-  <button id="nav0" class="active" onclick="showPage(0)">💳<br>Transfer</button>
-  <button id="nav1" onclick="showPage(1)">👥<br>Oyuncular</button>
-  <button id="nav2" onclick="showPage(2)">🧾<br>Geçmiş</button>
+
+  <button
+    id="nav0"
+    class="active"
+    onclick="showPage(0)">
+    💳<br>Ana Ekran
+  </button>
+
+  <button
+    id="nav1"
+    onclick="showPage(1)">
+    🧾<br>Geçmiş
+  </button>
+
 </nav>
+
 
 <div id="toast" class="toast"></div>
 
-<!-- Oda ekleme -->
+
+<!-- ODA EKLE -->
+
 <dialog id="roomDialog">
+
   <div class="dialog-body">
-    <h3>Oda Ekle</h3>
+
+    <h3>Masa Ekle</h3>
+
     <div class="field">
-      <label>Oda adı</label>
-      <input id="roomName" placeholder="Örn: Masa 1">
+
+      <label>Masa adı</label>
+
+      <input
+        id="roomName"
+        placeholder="Örn: Masa 1">
+
     </div>
+
+
     <div class="field">
+
       <label>Şifre (opsiyonel)</label>
-      <input id="roomPassword" type="password" placeholder="Boş bırakabilirsin">
-      <div class="helper">Şifre koyarsan, odaya girmek ve odayı silmek için gerekecek.</div>
+
+      <input
+        id="roomPassword"
+        type="password"
+        placeholder="Boş bırakabilirsin">
+
+      <div class="helper">
+        Şifre koyarsan, masaya girmek ve masayı silmek için gerekecek.
+      </div>
+
     </div>
+
+
     <div class="dialog-actions">
-      <button class="btn outline" onclick="closeDialog('roomDialog')">İptal</button>
-      <button class="btn primary" onclick="createRoom()">Oluştur</button>
+
+      <button
+        class="btn outline"
+        onclick="closeDialog('roomDialog')">
+        İptal
+      </button>
+
+      <button
+        class="btn primary"
+        onclick="createRoom()">
+        Oluştur
+      </button>
+
     </div>
+
   </div>
+
 </dialog>
 
-<!-- Oda şifre girişi -->
+
+<!-- ODA ŞİFRE -->
+
 <dialog id="roomPasswordDialog">
+
   <div class="dialog-body">
-    <h3 id="roomPasswordTitle">Şifre Gerekli</h3>
-    <input id="roomPasswordInput" type="password" placeholder="Şifreyi gir">
+
+    <h3 id="roomPasswordTitle">
+      Şifre Gerekli
+    </h3>
+
+    <input
+      id="roomPasswordInput"
+      type="password"
+      placeholder="Şifreyi gir">
+
     <div class="dialog-actions">
-      <button class="btn outline" onclick="closeDialog('roomPasswordDialog')">İptal</button>
-      <button class="btn primary" onclick="submitRoomPassword()">Gir</button>
+
+      <button
+        class="btn outline"
+        onclick="closeDialog('roomPasswordDialog')">
+        İptal
+      </button>
+
+      <button
+        class="btn primary"
+        onclick="submitRoomPassword()">
+        Gir
+      </button>
+
     </div>
+
   </div>
+
 </dialog>
+
+
+<!-- OYUNCU EKLE -->
 
 <dialog id="playerDialog">
+
   <div class="dialog-body">
+
     <h3>Oyuncu Ekle</h3>
-    <input id="playerName" placeholder="Oyuncu adı (Örn: Batuhan)" autofocus>
+
+    <input
+      id="playerName"
+      placeholder="Oyuncu adı (Örn: Batuhan)"
+      autofocus>
+
     <div class="dialog-actions">
-      <button class="btn outline" onclick="closeDialog('playerDialog')">İptal</button>
-      <button class="btn primary" onclick="addPlayer()">Ekle</button>
+
+      <button
+        class="btn outline"
+        onclick="closeDialog('playerDialog')">
+        İptal
+      </button>
+
+      <button
+        class="btn primary"
+        onclick="addPlayer()">
+        Ekle
+      </button>
+
     </div>
+
   </div>
+
 </dialog>
 
-<!-- ============================================================ -->
-<!-- FIREBASE AYARLARI - Kendi projenin bilgilerini buraya yapıştır -->
-<!-- Firebase Console > Project Settings > General > Your apps    -->
-<!-- ============================================================ -->
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+
 <script>
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBMEibjwgJ-KHnwW-8r11C3EeV3Ef5ZDgs",
-  authDomain: "monopoly-40fcc.firebaseapp.com",
-  databaseURL: "https://monopoly-40fcc-default-rtdb.firebaseio.com",
-  projectId: "monopoly-40fcc",
-  storageBucket: "monopoly-40fcc.firebasestorage.app",
-  messagingSenderId: "1026313997419",
-  appId: "1:1026313997419:web:c731f4331e346ab5a2b52e",
-  measurementId: "G-93JH0GJ4HT"
+
+  apiKey:"AIzaSyBMEibjwgJ-KHnwW-8r11C3EeV3Ef5ZDgs",
+
+  authDomain:"monopoly-40fcc.firebaseapp.com",
+
+  databaseURL:"https://monopoly-40fcc-default-rtdb.firebaseio.com",
+
+  projectId:"monopoly-40fcc",
+
+  storageBucket:"monopoly-40fcc.firebasestorage.app",
+
+  messagingSenderId:"1026313997419",
+
+  appId:"1:1026313997419:web:c731f4331e346ab5a2b52e",
+
+  measurementId:"G-93JH0GJ4HT"
+
 };
 
+
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const roomsRef = db.ref('rooms');
+
+const db=firebase.database();
+
+const roomsRef=db.ref('rooms');
+
 </script>
-<!-- ============================================================ -->
+
 
 <script>
-// roomsData: Firebase 'rooms' kökünün tamamı (tüm odalar, oyuncular, işlemler).
-// currentRoomKey: şu an içinde bulunulan odanın Firebase key'i (null = oda listesi ekranı).
-let roomsData={};
-let currentRoomKey=null;
-let pendingRoomKey=null;
-let pendingRoomAction=null; // 'enter' | 'delete'
 
-// Seçili odanın türetilmiş verileri (render için hazırlanmış)
+let roomsData={};
+
+let currentRoomKey=null;
+
+let pendingRoomKey=null;
+
+let pendingRoomAction=null;
+
 let playersObj={};
+
 let transactionsObj={};
-let players=[];        // [{key,name,balance}]
-let transactions=[];   // [{key,from,to,amount,time}]
-let selectedFrom=null;  // Firebase key (string)
+
+let players=[];
+
+let transactions=[];
+
+let selectedFrom=null;
+
 let selectedTo=null;
+
 let currentPage=0;
 
+let amountValue='';
+
+
 const connDot=document.getElementById('connDot');
+
 const connText=document.getElementById('connText');
+
+
 db.ref('.info/connected').on('value',snap=>{
-  if(snap.val()===true){connDot.classList.add('on');connText.textContent='Bağlı';}
-  else{connDot.classList.remove('on');connText.textContent='Bağlantı Kesildi';}
+
+  if(snap.val()===true){
+
+    connDot.classList.add('on');
+
+    connText.textContent='Bağlı';
+
+  }else{
+
+    connDot.classList.remove('on');
+
+    connText.textContent='Bağlantı Kesildi';
+
+  }
+
 });
 
-function roomRef(sub){return db.ref('rooms/'+currentRoomKey+(sub?('/'+sub):''));}
 
 roomsRef.on('value',(snap)=>{
+
   roomsData=snap.val()||{};
+
   syncCurrentRoomState();
+
   render();
+
 });
 
+
 function syncCurrentRoomState(){
+
   if(currentRoomKey && !roomsData[currentRoomKey]){
-    // İçindeyken oda başka biri tarafından silindi.
-    toast('Bu oda silindi.');
+
+    toast('Bu masa silindi.');
+
     currentRoomKey=null;
+
   }
+
+
   if(currentRoomKey){
+
     const room=roomsData[currentRoomKey]||{};
+
     playersObj=room.players||{};
+
     transactionsObj=room.transactions||{};
-    players=Object.keys(playersObj).sort().map(k=>({key:k,...playersObj[k]}));
-    transactions=Object.keys(transactionsObj).sort().reverse().map(k=>({key:k,...transactionsObj[k]}));
-    if(selectedFrom!==null && !playersObj[selectedFrom])selectedFrom=null;
-    if(selectedTo!==null && !playersObj[selectedTo])selectedTo=null;
-  } else {
-    playersObj={};transactionsObj={};players=[];transactions=[];selectedFrom=null;selectedTo=null;
+
+
+    players=Object.keys(playersObj)
+      .sort()
+      .map(k=>({
+        key:k,
+        ...playersObj[k]
+      }));
+
+
+    transactions=Object.keys(transactionsObj)
+      .sort()
+      .reverse()
+      .map(k=>({
+        key:k,
+        ...transactionsObj[k]
+      }));
+
+
+    if(selectedFrom!==null && !playersObj[selectedFrom])
+      selectedFrom=null;
+
+    if(selectedTo!==null && !playersObj[selectedTo])
+      selectedTo=null;
+
+  }else{
+
+    playersObj={};
+
+    transactionsObj={};
+
+    players=[];
+
+    transactions=[];
+
+    selectedFrom=null;
+
+    selectedTo=null;
+
+    amountValue='';
+
   }
+
 }
 
-const fmt = n => n.toLocaleString('tr-TR') + ' ₺';
-const inputFmt = n => n.toLocaleString('tr-TR');
+
+const fmt=n=>
+  n.toLocaleString('tr-TR')+' ₺';
+
+
+const inputFmt=n=>
+  n.toLocaleString('tr-TR');
+
 
 function toast(msg,success=false){
+
   const t=document.getElementById('toast');
-  t.textContent=msg;t.style.background=success?'#2e7d32':'#333';t.classList.add('show');
-  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+
+  t.textContent=msg;
+
+  t.style.background=success?'#2e7d32':'#333';
+
+  t.classList.add('show');
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer=setTimeout(
+    ()=>t.classList.remove('show'),
+    2200
+  );
+
 }
+
 
 function showPage(i){
+
   currentPage=i;
-  document.querySelectorAll('.nav button').forEach((x,j)=>x.classList.toggle('active',j===i));
+
+  document
+    .querySelectorAll('.nav button')
+    .forEach((x,j)=>
+      x.classList.toggle('active',j===i)
+    );
+
   render();
+
 }
 
-/* ---------------- ODA YÖNETİMİ ---------------- */
+
+/* =========================================================
+   Masa YÖNETİMİ
+   ========================================================= */
+
 
 function openRoomDialog(){
+
   document.getElementById('roomName').value='';
+
   document.getElementById('roomPassword').value='';
+
   document.getElementById('roomDialog').showModal();
+
 }
+
 
 function createRoom(){
-  const name=document.getElementById('roomName').value.trim();
-  if(!name){toast('Oda adı gir.');return}
-  const password=document.getElementById('roomPassword').value.trim();
+
+  const name=
+    document.getElementById('roomName')
+    .value
+    .trim();
+
+  if(!name){
+
+    toast('Masa adı gir.');
+
+    return;
+
+  }
+
+
+  const password=
+    document.getElementById('roomPassword')
+    .value
+    .trim();
+
+
   const newRef=roomsRef.push();
-  newRef.set({meta:{name,password:password||null,createdAt:Date.now()},players:{},transactions:{}});
+
+
+  newRef.set({
+
+    meta:{
+      name,
+      password:password||null,
+      createdAt:Date.now()
+    },
+
+    players:{},
+
+    transactions:{}
+
+  });
+
+
   closeDialog('roomDialog');
-  toast(name+' odası oluşturuldu.',true);
+
+  toast(name+' masası oluşturuldu.',true);
+
   doEnterRoom(newRef.key);
+
 }
+
 
 function enterRoom(key){
+
   const room=roomsData[key];
+
   if(!room)return;
+
+
   if(room.meta && room.meta.password){
+
     pendingRoomKey=key;
+
     pendingRoomAction='enter';
-    document.getElementById('roomPasswordTitle').textContent=(room.meta.name||'Oda')+' - Şifre Gerekli';
+
+    document.getElementById('roomPasswordTitle')
+      .textContent=
+      (room.meta.name||'Masa')+
+      ' - Şifre Gerekli';
+
+
     document.getElementById('roomPasswordInput').value='';
-    document.getElementById('roomPasswordDialog').showModal();
-  } else {
+
+    document
+      .getElementById('roomPasswordDialog')
+      .showModal();
+
+  }else{
+
     doEnterRoom(key);
+
   }
+
 }
+
 
 function submitRoomPassword(){
+
   const room=roomsData[pendingRoomKey];
-  if(!room){closeDialog('roomPasswordDialog');return}
-  const val=document.getElementById('roomPasswordInput').value;
-  if(room.meta.password && val!==room.meta.password){toast('Şifre yanlış.');return}
-  closeDialog('roomPasswordDialog');
-  if(pendingRoomAction==='delete'){
-    doDeleteRoom(pendingRoomKey);
-  } else {
-    doEnterRoom(pendingRoomKey);
+
+  if(!room){
+
+    closeDialog('roomPasswordDialog');
+
+    return;
+
   }
+
+
+  const val=
+    document.getElementById('roomPasswordInput')
+    .value;
+
+
+  if(room.meta.password && val!==room.meta.password){
+
+    toast('Şifre yanlış.');
+
+    return;
+
+  }
+
+
+  closeDialog('roomPasswordDialog');
+
+
+  if(pendingRoomAction==='delete'){
+
+    doDeleteRoom(pendingRoomKey);
+
+  }else{
+
+    doEnterRoom(pendingRoomKey);
+
+  }
+
 }
+
 
 function doEnterRoom(key){
+
   currentRoomKey=key;
+
   currentPage=0;
+
+  amountValue='';
+
+  selectedFrom=null;
+
+  selectedTo=null;
+
   syncCurrentRoomState();
-  document.querySelectorAll('.nav button').forEach((x,j)=>x.classList.toggle('active',j===0));
+
+  document
+    .querySelectorAll('.nav button')
+    .forEach((x,j)=>
+      x.classList.toggle('active',j===0)
+    );
+
   render();
+
 }
+
 
 function leaveRoom(){
+
   currentRoomKey=null;
+
   syncCurrentRoomState();
+
   render();
+
 }
+
 
 function deleteRoom(key){
+
   const room=roomsData[key];
+
   if(!room)return;
+
+
   if(room.meta && room.meta.password){
-    // Şifreli oda: silmeden önce şifreyi doğrula.
+
     pendingRoomKey=key;
+
     pendingRoomAction='delete';
-    document.getElementById('roomPasswordTitle').textContent=(room.meta.name||'Oda')+' - Silmek için şifre gir';
+
+
+    document.getElementById('roomPasswordTitle')
+      .textContent=
+      (room.meta.name||'Oda')+
+      ' - Silmek için şifre gir';
+
+
     document.getElementById('roomPasswordInput').value='';
-    document.getElementById('roomPasswordDialog').showModal();
+
+
+    document
+      .getElementById('roomPasswordDialog')
+      .showModal();
+
     return;
+
   }
-  const name=(room.meta&&room.meta.name)||'Bu oda';
-  if(!confirm(name+' odasını silmek istiyor musun? Bu işlem geri alınamaz.'))return;
+
+
+  const name=
+    (room.meta&&room.meta.name)||
+    'Bu Masa';
+
+
+  if(!confirm(
+    name+
+    ' masasını silmek istiyor musun? Bu işlem geri alınamaz.'
+  ))return;
+
+
   db.ref('rooms/'+key).remove();
-  if(currentRoomKey===key){currentRoomKey=null;render();}
+
+
+  if(currentRoomKey===key){
+
+    currentRoomKey=null;
+
+    render();
+
+  }
+
+
   toast(name+' silindi.',true);
+
 }
+
 
 function doDeleteRoom(key){
+
   const room=roomsData[key];
-  const name=(room&&room.meta&&room.meta.name)||'Bu oda';
-  if(!confirm(name+' odasını silmek istiyor musun? Bu işlem geri alınamaz.'))return;
+
+  const name=
+    (room&&room.meta&&room.meta.name)||
+    'Bu Masa';
+
+
+  if(!confirm(
+    name+
+    ' masasını silmek istiyor musun? Bu işlem geri alınamaz.'
+  ))return;
+
+
   db.ref('rooms/'+key).remove();
-  if(currentRoomKey===key){currentRoomKey=null;render();}
+
+
+  if(currentRoomKey===key){
+
+    currentRoomKey=null;
+
+    render();
+
+  }
+
+
   toast(name+' silindi.',true);
+
 }
 
-/* ---------------- OYUNCU YÖNETİMİ ---------------- */
+
+/* =========================================================
+   OYUNCU YÖNETİMİ
+   ========================================================= */
+
 
 function addPlayer(){
-  if(players.length>=6){toast('En fazla 6 oyuncu ekleyebilirsin.');return}
-  const name=document.getElementById('playerName').value.trim();
-  if(!name){toast('Oyuncu adı gir.');return}
-  roomRef('players').push({name,balance:15000000});
+
+  if(currentRoomKey===null){
+
+    toast('Önce bir masaya gir.');
+
+    return;
+
+  }
+
+
+  if(players.length>=6){
+
+    toast('En fazla 6 oyuncu ekleyebilirsin.');
+
+    return;
+
+  }
+
+
+  const name=
+    document.getElementById('playerName')
+    .value
+    .trim();
+
+
+  if(!name){
+
+    toast('Oyuncu adı gir.');
+
+    return;
+
+  }
+
+
+  roomRef('players').push({
+
+    name,
+
+    balance:15000000
+
+  });
+
+
   document.getElementById('playerName').value='';
-  closeDialog('playerDialog');toast(name+' eklendi.',true);
+
+  closeDialog('playerDialog');
+
+  toast(name+' eklendi.',true);
+
 }
 
-function openPlayerDialog(){document.getElementById('playerName').value='';document.getElementById('playerDialog').showModal()}
-function closeDialog(id){document.getElementById(id).close()}
+
+function openPlayerDialog(){
+
+  if(currentRoomKey===null){
+
+    toast('Önce bir masaya gir.');
+
+    return;
+
+  }
+
+
+  if(players.length>=6){
+
+    toast('En fazla 6 oyuncu ekleyebilirsin.');
+
+    return;
+
+  }
+
+
+  document.getElementById('playerName').value='';
+
+  document.getElementById('playerDialog').showModal();
+
+}
+
+
+function closeDialog(id){
+
+  document.getElementById(id).close();
+
+}
+
 
 function removePlayer(key){
+
   const p=playersObj[key];
+
   if(!p)return;
-  if(!confirm(p.name+' oyuncusunu silmek istiyor musun?'))return;
-  roomRef('players').child(key).remove();
-  if(selectedFrom===key)selectedFrom=null;
-  if(selectedTo===key)selectedTo=null;
+
+
+  if(!confirm(
+    p.name+
+    ' oyuncusunu silmek istiyor musun?'
+  ))return;
+
+
+  roomRef('players')
+    .child(key)
+    .remove();
+
+
+  if(selectedFrom===key)
+    selectedFrom=null;
+
+  if(selectedTo===key)
+    selectedTo=null;
+
+
   toast(p.name+' silindi.',true);
+
 }
+
 
 function renamePlayer(key){
-  const input=document.getElementById('renameInput_'+key);
+
+  const input=
+    document.getElementById('renameInput_'+key);
+
   if(!input)return;
-  const newName=input.value.trim();
-  if(!newName){toast('Oyuncu adı boş olamaz.');return}
-  roomRef('players').child(key).child('name').set(newName);
-  toast('Oyuncu adı "'+newName+'" olarak değiştirildi.',true);
+
+
+  const newName=
+    input.value.trim();
+
+
+  if(!newName){
+
+    toast('Oyuncu adı boş olamaz.');
+
+    return;
+
+  }
+
+
+  roomRef('players')
+    .child(key)
+    .child('name')
+    .set(newName);
+
+
+  toast(
+    'Oyuncu adı "'+
+    newName+
+    '" olarak değiştirildi.',
+    true
+  );
+
 }
+
 
 function editPlayerName(key){
+
   const p=playersObj[key];
+
   if(!p)return;
-  const playerInfo=document.querySelector(`.player-card [onclick="editPlayerName('${key}')"]`).closest('.player-card').querySelector('.player-info');
+
+
+  const card=
+    document.getElementById(
+      'playerCard_'+key
+    );
+
+  if(!card)return;
+
+
+  const playerInfo=
+    card.querySelector('.player-info');
+
+
   playerInfo.innerHTML=`
-    <input id="renameInput_${key}" class="rename-input" value="${esc(p.name)}" maxlength="30" autofocus>
+
+    <input
+      id="renameInput_${key}"
+      class="rename-input"
+      value="${esc(p.name)}"
+      maxlength="30"
+      autofocus
+    >
+
     <div style="display:flex;gap:6px;margin-top:6px">
-      <button class="btn success" style="padding:8px 12px" onclick="renamePlayer('${key}')">✓ Kaydet</button>
-      <button class="btn outline" style="padding:8px 12px" onclick="renderPlayers()">İptal</button>
+
+      <button
+        class="btn success"
+        style="padding:8px 12px"
+        onclick="renamePlayer('${key}')">
+        ✓ Kaydet
+      </button>
+
+      <button
+        class="btn outline"
+        style="padding:8px 12px"
+        onclick="renderPOS()">
+        İptal
+      </button>
+
     </div>
-    <div class="balance">${fmt(p.balance)}</div>
+
+    <div class="balance">
+      ${fmt(p.balance)}
+    </div>
+
   `;
-  const input=document.getElementById('renameInput_'+key);
-  input.focus();input.select();
-  input.addEventListener('keydown',function(e){if(e.key==='Enter')renamePlayer(key)});
+
+
+  const input=
+    document.getElementById(
+      'renameInput_'+key
+    );
+
+
+  input.focus();
+
+  input.select();
+
+
+  input.addEventListener(
+    'keydown',
+    function(e){
+
+      if(e.key==='Enter')
+        renamePlayer(key);
+
+      if(e.key==='Escape')
+        renderPOS();
+
+    }
+  );
+
 }
 
-/* ---------------- PARA İŞLEMLERİ ---------------- */
+
+/* =========================================================
+   PARA İŞLEMLERİ
+   ========================================================= */
+
+
+function roomRef(sub){
+
+  return db.ref(
+    'rooms/'+
+    currentRoomKey+
+    (sub?('/'+sub):'')
+  );
+
+}
+
 
 function amountFromInput(){
-  const raw=document.getElementById('amount').value.replace(/\./g,'').replace(/,/g,'').trim();
+
+  const el=
+    document.getElementById('amount');
+
+  if(!el)return null;
+
+
+  const raw=
+    el.value
+      .replace(/\./g,'')
+      .replace(/,/g,'')
+      .trim();
+
+
   const n=parseInt(raw);
-  return (!n||n<=0)?null:n*1000;
+
+
+  return (!n||n<=0)
+    ?null
+    :n*1000;
+
 }
+
 
 function transferMoney(){
-  if(selectedFrom===null||selectedTo===null){toast('Gönderen ve alıcı oyuncuyu seç.');return}
-  if(selectedFrom===selectedTo){toast('Oyuncu kendisine para gönderemez.');return}
+
+  if(
+    selectedFrom===null||
+    selectedTo===null
+  ){
+
+    toast(
+      'Gönderen ve alıcı oyuncuyu seç.'
+    );
+
+    return;
+
+  }
+
+
+  if(selectedFrom===selectedTo){
+
+    toast(
+      'Oyuncu kendisine para gönderemez.'
+    );
+
+    return;
+
+  }
+
+
   const amount=amountFromInput();
-  if(!amount){toast('Geçerli bir tutar gir.');return}
-  const from=playersObj[selectedFrom],to=playersObj[selectedTo];
+
+
+  if(!amount){
+
+    toast('Geçerli bir tutar gir.');
+
+    return;
+
+  }
+
+
+  const from=playersObj[selectedFrom];
+
+  const to=playersObj[selectedTo];
+
+
   if(!from||!to)return;
-  if(amount>from.balance){toast('Gönderen oyuncunun bakiyesi yetersiz.');return}
-  const txKey=roomRef('transactions').push().key;
+
+
+  if(amount>from.balance){
+
+    toast(
+      'Gönderen oyuncunun bakiyesi yetersiz.'
+    );
+
+    return;
+
+  }
+
+
+  const txKey=
+    roomRef('transactions').push().key;
+
+
   const updates={};
-  updates['players/'+selectedFrom+'/balance']=from.balance-amount;
-  updates['players/'+selectedTo+'/balance']=to.balance+amount;
-  updates['transactions/'+txKey]={from:from.name,to:to.name,amount,time:Date.now()};
+
+
+  updates[
+    'players/'+
+    selectedFrom+
+    '/balance'
+  ]=
+    from.balance-amount;
+
+
+  updates[
+    'players/'+
+    selectedTo+
+    '/balance'
+  ]=
+    to.balance+amount;
+
+
+  updates[
+    'transactions/'+txKey
+  ]={
+
+    from:from.name,
+
+    to:to.name,
+
+    amount,
+
+    time:Date.now()
+
+  };
+
+
   roomRef().update(updates);
-  document.getElementById('amount').value='';
-  window.amountValue='';
-  toast(fmt(amount)+' transfer edildi.',true);
+
+
+  amountValue='';
+
+  toast(
+    fmt(amount)+
+    ' transfer edildi.',
+    true
+  );
+
 }
+
 
 function changeAmount(value){
-  const el=document.getElementById('amount');
-  let current=parseInt(el.value.replace(/\./g,'').replace(/,/g,''))||0;
-  current+=value;if(current<0)current=0;
-  el.value=current?inputFmt(current):'';
-  window.amountValue=el.value;
+
+  const el=
+    document.getElementById('amount');
+
+  if(!el)return;
+
+
+  let current=
+    parseInt(
+      el.value
+        .replace(/\./g,'')
+        .replace(/,/g,'')
+    )||0;
+
+
+  current+=value;
+
+
+  if(current<0)
+    current=0;
+
+
+  el.value=
+    current?
+    inputFmt(current):
+    '';
+
+
+  amountValue=el.value;
+
 }
 
-// Banka -> Oyuncu (para ekleme). Her işlem geçmişe de yansır.
+
 function addMoney(key,amount){
-  const p=playersObj[key];if(!p)return;
-  const txKey=roomRef('transactions').push().key;
+
+  const p=playersObj[key];
+
+  if(!p)return;
+
+
+  const txKey=
+    roomRef('transactions').push().key;
+
+
   const updates={};
-  updates['players/'+key+'/balance']=p.balance+amount;
-  updates['transactions/'+txKey]={from:'Banka',to:p.name,amount,time:Date.now()};
+
+
+  updates[
+    'players/'+
+    key+
+    '/balance'
+  ]=
+    p.balance+amount;
+
+
+  updates[
+    'transactions/'+txKey
+  ]={
+
+    from:'Banka',
+
+    to:p.name,
+
+    amount,
+
+    time:Date.now()
+
+  };
+
+
   roomRef().update(updates);
-  toast(p.name+' hesabına '+fmt(amount)+' eklendi.',true);
+
+
+  toast(
+    p.name+
+    ' hesabına '+
+    fmt(amount)+
+    ' eklendi.',
+    true
+  );
+
 }
 
-// Oyuncu -> Banka (para çıkarma). Her işlem geçmişe de yansır.
+
 function removeMoney(key,amount){
-  const p=playersObj[key];if(!p)return;
-  if(p.balance<amount){toast(p.name+' oyuncusunun bakiyesi yetersiz.');return}
-  const txKey=roomRef('transactions').push().key;
+
+  const p=playersObj[key];
+
+  if(!p)return;
+
+
+  if(p.balance<amount){
+
+    toast(
+      p.name+
+      ' oyuncusunun bakiyesi yetersiz.'
+    );
+
+    return;
+
+  }
+
+
+  const txKey=
+    roomRef('transactions').push().key;
+
+
   const updates={};
-  updates['players/'+key+'/balance']=p.balance-amount;
-  updates['transactions/'+txKey]={from:p.name,to:'Banka',amount,time:Date.now()};
+
+
+  updates[
+    'players/'+
+    key+
+    '/balance'
+  ]=
+    p.balance-amount;
+
+
+  updates[
+    'transactions/'+txKey
+  ]={
+
+    from:p.name,
+
+    to:'Banka',
+
+    amount,
+
+    time:Date.now()
+
+  };
+
+
   roomRef().update(updates);
-  toast(p.name+' hesabından '+fmt(amount)+' çıkarıldı.',true);
+
+
+  toast(
+    p.name+
+    ' hesabından '+
+    fmt(amount)+
+    ' çıkarıldı.',
+    true
+  );
+
 }
 
-// Kart üzerindeki hızlı elle giriş satırı: popup yok, direkt uygulanır.
+
 function formatManualInput(el){
-  const clean=el.value.replace(/\D/g,'');
-  el.value=clean?inputFmt(parseInt(clean)):'';
+
+  const clean=
+    el.value.replace(/\D/g,'');
+
+
+  el.value=
+    clean?
+    inputFmt(parseInt(clean)):
+    '';
+
 }
+
 
 function manualApply(key,sign){
-  const el=document.getElementById('manualAmount_'+key);
+
+  const el=
+    document.getElementById(
+      'manualAmount_'+key
+    );
+
+
   if(!el)return;
-  const n=parseInt(el.value.replace(/\./g,'').replace(/,/g,''));
-  if(!n||n<=0){toast('Geçerli bir tutar gir.');return}
+
+
+  const n=
+    parseInt(
+      el.value
+        .replace(/\./g,'')
+        .replace(/,/g,'')
+    );
+
+
+  if(!n||n<=0){
+
+    toast('Geçerli bir tutar gir.');
+
+    return;
+
+  }
+
+
   const amount=n*1000;
-  if(sign>0)addMoney(key,amount);else removeMoney(key,amount);
+
+
+  if(sign>0)
+    addMoney(key,amount);
+  else
+    removeMoney(key,amount);
+
+
   el.value='';
+
 }
+
 
 function resetGame(){
+
   if(currentRoomKey===null)return;
-  if(!players.length&&!transactions.length)return;
-  if(!confirm('Bu odadaki tüm oyuncular ve işlem geçmişi silinecek. Emin misin?'))return;
+
+  if(
+    !players.length&&
+    !transactions.length
+  )return;
+
+
+  if(!confirm(
+    'Bu masadaki tüm oyuncular ve işlem geçmişi silinecek. Emin misin?'
+  ))return;
+
+
   roomRef('players').remove();
+
   roomRef('transactions').remove();
-  selectedFrom=null;selectedTo=null;toast('Oyun sıfırlandı.',true);
+
+
+  selectedFrom=null;
+
+  selectedTo=null;
+
+  amountValue='';
+
+
+  toast(
+    'Oyun sıfırlandı.',
+    true
+  );
+
 }
 
-/* ---------------- GÖRÜNÜM ---------------- */
+
+/* =========================================================
+   GÖRÜNÜM
+   ========================================================= */
+
 
 function render(){
-  const inRoom=currentRoomKey!==null;
-  document.getElementById('roomsPage').classList.toggle('active',!inRoom);
-  document.getElementById('posPage').classList.toggle('active',inRoom&&currentPage===0);
-  document.getElementById('playersPage').classList.toggle('active',inRoom&&currentPage===1);
-  document.getElementById('historyPage').classList.toggle('active',inRoom&&currentPage===2);
-  document.getElementById('mainNav').style.display=inRoom?'flex':'none';
-  document.getElementById('backBtn').style.display=inRoom?'':'none';
-  document.getElementById('resetBtn').style.display=inRoom?'':'none';
-  const room=inRoom?roomsData[currentRoomKey]:null;
-  document.getElementById('appTitle').textContent=(room&&room.meta&&room.meta.name)?room.meta.name:'MONOPOLY';
 
-  if(!inRoom){renderRoomsList();return}
-  renderPOS();renderPlayers();renderHistory();
+  const inRoom=
+    currentRoomKey!==null;
+
+
+  document
+    .getElementById('roomsPage')
+    .classList
+    .toggle('active',!inRoom);
+
+
+  document
+    .getElementById('posPage')
+    .classList
+    .toggle(
+      'active',
+      inRoom&&currentPage===0
+    );
+
+
+  document
+    .getElementById('historyPage')
+    .classList
+    .toggle(
+      'active',
+      inRoom&&currentPage===1
+    );
+
+
+  document.getElementById(
+    'mainNav'
+  ).style.display=
+    inRoom?'flex':'none';
+
+
+  document.getElementById(
+    'backBtn'
+  ).style.display=
+    inRoom?'':'none';
+
+
+  document.getElementById(
+    'resetBtn'
+  ).style.display=
+    inRoom?'':'none';
+
+
+  const addBtn=
+    document.getElementById(
+      'playerAddBtn'
+    );
+
+
+  addBtn.style.display=
+    inRoom?'':'none';
+
+
+  addBtn.disabled=!inRoom;
+
+
+  addBtn.title=
+    players.length>=6
+    ?'Maksimum 6 oyuncu'
+    :'Oyuncu ekle';
+
+
+  const room=
+    inRoom
+    ?roomsData[currentRoomKey]
+    :null;
+
+
+  document.getElementById(
+    'appTitle'
+  ).textContent=
+    (
+      room&&
+      room.meta&&
+      room.meta.name
+    )
+    ?room.meta.name
+    :'MONOPOLY';
+document.getElementById('appLogo').style.display=inRoom?'none':'';
+
+  if(!inRoom){
+
+    renderRoomsList();
+
+    return;
+
+  }
+
+
+  renderPOS();
+
+  renderHistory();
+
 }
+
+
+/* =========================================================
+   ODALAR LİSTESİ
+   ========================================================= */
+
 
 function renderRoomsList(){
-  const keys=Object.keys(roomsData);
-  document.getElementById('roomsPage').innerHTML=`
+
+  const keys=
+    Object.keys(roomsData);
+
+
+  document.getElementById(
+    'roomsPage'
+  ).innerHTML=`
+
     <div class="card players-head">
-      <div><h2>Odalar</h2><span>${keys.length} oda</span></div>
-      ${keys.length?`<button class="btn primary" onclick="openRoomDialog()">＋ Oda Ekle</button>`:''}
+
+      <div>
+
+        <h2>🏠Masalar</h2>
+
+        <span>
+          ${keys.length} Masa
+        </span>
+
+      </div>
+
+      ${
+        keys.length
+        ?
+        `
+          <button
+            class="btn primary"
+            onclick="openRoomDialog()">
+            ＋ Masa Ekle
+          </button>
+        `
+        :
+        ''
+      }
+
     </div>
-    ${keys.length?keys.map(k=>{
-      const room=roomsData[k];
-      const meta=room.meta||{name:'İsimsiz Oda'};
-      const plist=room.players?Object.values(room.players):[];
-      const total=plist.reduce((s,p)=>s+(p.balance||0),0);
-      return `
-        <div class="card player-card">
-          <div class="player-top">
-            <div class="avatar">${esc((meta.name||'?')[0].toUpperCase())}</div>
-            <div class="player-info">
-              <div class="player-name" style="font-size:18px">${esc(meta.name||'İsimsiz Oda')} ${meta.password?'<span class="lock">🔒</span>':''}</div>
-              <div class="balance">${plist.length}/6 oyuncu • ${fmt(total)}</div>
+
+
+    ${
+      keys.length
+
+      ?
+
+      keys.map(k=>{
+
+        const room=roomsData[k];
+
+        const meta=
+          room.meta||
+          {
+            name:'İsimsiz Masa'
+          };
+
+
+        const plist=
+          room.players
+          ?
+          Object.values(room.players)
+          :
+          [];
+
+
+        const total=
+          plist.reduce(
+            (s,p)=>
+              s+(p.balance||0),
+            0
+          );
+
+
+        return `
+
+          <div class="card player-card">
+
+            <div class="player-top">
+
+              <div class="player-info">
+
+                <div
+                  class="player-name"
+                  style="font-size:18px">
+
+                  ${esc(
+                    meta.name||
+                    'İsimsiz Masa'
+                  )}
+
+                  ${
+                    meta.password
+                    ?
+                    '<span class="lock">🔒</span>'
+                    :
+                    ''
+                  }
+
+                </div>
+
+
+                <div class="balance">
+
+                  ${plist.length}/6 oyuncu
+                  •
+                  ${fmt(total)}
+
+                </div>
+
+              </div>
+
             </div>
+
+
+            <div class="player-manage">
+
+              <button
+                class="btn success"
+                onclick="enterRoom('${k}')">
+
+                ▶️ Masaya Gir
+
+              </button>
+
+
+              <button
+                class="btn danger"
+                onclick="deleteRoom('${k}')">
+
+                🗑️ Sil
+
+              </button>
+
+            </div>
+
           </div>
-          <div class="player-manage">
-            <button class="btn success" onclick="enterRoom('${k}')">▶️ Odaya Gir</button>
-            <button class="btn danger" onclick="deleteRoom('${k}')">🗑️ Sil</button>
-          </div>
-        </div>`;
-    }).join(''):`
-      <div class="card empty">
-        <div class="big">🏠</div>
-        <h3>Henüz oda yok.</h3>
-        <button class="btn primary" onclick="openRoomDialog()">＋ İlk Odayı Oluştur</button>
-      </div>`}
+
+        `;
+
+      }).join('')
+
+      :
+
+      `
+
+        <div class="card empty">
+
+          <div class="big">🏠</div>
+
+          <h3>Henüz masa yok.</h3>
+
+          <button
+            class="btn primary"
+            onclick="openRoomDialog()">
+
+            ＋ İlk Masayı Oluştur
+
+          </button>
+
+        </div>
+
+      `
+    }
+
   `;
+
 }
+
+
+/* =========================================================
+   POS
+   ========================================================= */
+
 
 function renderPOS(){
-  const total=players.reduce((s,p)=>s+p.balance,0);
-  const options=players.map(p=>`<option value="${p.key}">${esc(p.name)} - ${fmt(p.balance)}</option>`).join('');
-  const fromName=selectedFrom&&playersObj[selectedFrom]?playersObj[selectedFrom].name:'';
-  const toName=selectedTo&&playersObj[selectedTo]?playersObj[selectedTo].name:'';
-  const selectedFromHtml=selectedFrom!==null?`<option value="${selectedFrom}" selected>${esc(fromName)}</option>`:'<option value="" selected disabled>Oyuncu seç</option>';
-  const selectedToHtml=selectedTo!==null?`<option value="${selectedTo}" selected>${esc(toName)}</option>`:'<option value="" selected disabled>Oyuncu seç</option>';
 
-  document.getElementById('posPage').innerHTML=`
+  const total=
+    players.reduce(
+      (s,p)=>
+        s+p.balance,
+      0
+    );
+
+
+  const options=
+    players.map(p=>
+      `<option value="${p.key}">
+        ${esc(p.name)} - ${fmt(p.balance)}
+      </option>`
+    ).join('');
+
+
+  const fromName=
+    selectedFrom&&
+    playersObj[selectedFrom]
+    ?
+    playersObj[selectedFrom].name
+    :
+    '';
+
+
+  const toName=
+    selectedTo&&
+    playersObj[selectedTo]
+    ?
+    playersObj[selectedTo].name
+    :
+    '';
+
+
+  const selectedFromHtml=
+    selectedFrom!==null
+
+    ?
+
+    `<option
+      value="${selectedFrom}"
+      selected>
+      ${esc(fromName)}
+    </option>`
+
+    :
+
+    `<option
+      value=""
+      selected
+      disabled>
+      Oyuncu seç
+    </option>`;
+
+
+  const selectedToHtml=
+    selectedTo!==null
+
+    ?
+
+    `<option
+      value="${selectedTo}"
+      selected>
+      ${esc(toName)}
+    </option>`
+
+    :
+
+    `<option
+      value=""
+      selected
+      disabled>
+      Oyuncu seç
+    </option>`;
+
+
+  document.getElementById(
+    'posPage'
+  ).innerHTML=`
+
     <div class="total">
-      <div class="icon">💰</div><div class="label">MASADAKİ TOPLAM PARA</div>
-      <div class="money">${fmt(total)}</div><div class="players">${players.length}/6 oyuncu</div>
+
+      <div class="icon">💰</div>
+
+      <div class="label">
+        MASADAKİ TOPLAM PARA
+      </div>
+
+      <div class="money">
+        ${fmt(total)}
+      </div>
+
+      <div class="players">
+        ${players.length}/6 oyuncu
+      </div>
+
     </div>
+
+
     <div class="card">
-      <div class="section-title">↔️ PARA TRANSFERİ</div>
-      ${players.length<2?`<div class="notice">👥<br><br>Transfer yapmak için en az 2 oyuncu gerekli.</div>`:`
-        <div class="field"><label>Para Gönderen</label>
-          <select id="fromSelect" onchange="selectedFrom=this.value===''?null:this.value;render()">${selectedFromHtml}${options}</select>
-        </div>
-        <div class="arrow">↓</div>
-        <div class="field"><label>Para Alacak</label>
-          <select id="toSelect" onchange="selectedTo=this.value===''?null:this.value;render()">${selectedToHtml}${options}</select>
-        </div>
-        <div class="field">
-          <label>Transfer Tutarı</label>
-          <input id="amount" inputmode="numeric" placeholder="Örn: 1.500" value="${window.amountValue||''}" oninput="formatAmountInput(this)">
-          <div class="helper">1.500 = 1.500.000 ₺</div>
-        </div>
-        <button class="btn primary complete" onclick="transferMoney()">💳 ÖDEMEYİ TAMAMLA</button>
-      `}
+
+      <div class="section-title">
+        ↔️ PARA TRANSFERİ
+      </div>
+
+
+      ${
+        players.length<2
+
+        ?
+
+        `
+
+          <div class="notice">
+
+            👥<br><br>
+
+            Transfer yapmak için
+            en az 2 oyuncu gerekli.
+
+          </div>
+
+        `
+
+        :
+
+        `
+
+          <div class="field">
+
+            <label>
+              Para Gönderen
+            </label>
+
+            <select
+              id="fromSelect"
+              onchange="
+                selectedFrom=
+                this.value===''?
+                null:
+                this.value;
+                renderPOS()
+              ">
+
+              ${selectedFromHtml}
+
+              ${options}
+
+            </select>
+
+          </div>
+
+
+          <div class="arrow">
+            ↓
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Para Alacak
+            </label>
+
+            <select
+              id="toSelect"
+              onchange="
+                selectedTo=
+                this.value===''?
+                null:
+                this.value;
+                renderPOS()
+              ">
+
+              ${selectedToHtml}
+
+              ${options}
+
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label>
+              Transfer Tutarı
+            </label>
+
+            <input
+              id="amount"
+              inputmode="numeric"
+              placeholder="Örn: 1.500"
+              value="${esc(amountValue)}"
+              oninput="formatAmountInput(this)">
+
+            <div class="helper">
+              1.500 = 1.500.000 ₺
+            </div>
+
+          </div>
+
+
+          <button
+            class="btn primary complete"
+            onclick="transferMoney()">
+
+            💳 ÖDEMEYİ TAMAMLA
+
+          </button>
+
+        `
+      }
+
     </div>
+
+
     <div class="card">
-      <div class="summary-title">OYUNCU BAKİYELERİ</div>
-      ${players.length?players.map(p=>`
-        <div class="player-row">
-          <div class="avatar">${esc(p.name[0].toUpperCase())}</div>
-          <div class="player-info"><div class="player-name">${esc(p.name)}</div><div class="balance">${fmt(p.balance)}</div></div>
-        </div>`).join(''):'<div style="text-align:center;padding:20px">Henüz oyuncu eklenmedi.</div>'}
-    </div>`;
-  if(window.amountValue===undefined)window.amountValue='';
+
+      <div class="summary-title">
+        OYUNCU BAKİYELERİ
+      </div>
+
+
+      ${
+        players.length
+
+        ?
+
+        players.map(p=>`
+
+          <div
+            class="card player-card"
+            id="playerCard_${p.key}"
+            style="
+              margin-bottom:12px;
+              box-shadow:none;
+              border:1px solid #eee
+            ">
+
+            <div class="player-top">
+
+              <div class="player-info">
+
+                <div class="player-name-line">
+
+                  <div
+                    class="player-name"
+                    style="font-size:18px">
+
+                    ${esc(p.name)}
+
+                  </div>
+
+
+                  <div class="player-mini-actions">
+
+                    <button
+                      class="mini-btn edit-mini"
+                      onclick="editPlayerName('${p.key}')"
+                      title="İsmi değiştir">
+
+                      ✏️
+
+                    </button>
+
+
+                    <button
+                      class="mini-btn delete-mini"
+                      onclick="removePlayer('${p.key}')"
+                      title="Oyuncuyu sil">
+
+                      🗑️
+
+                    </button>
+
+                  </div>
+
+
+                  <div class="player-compact-actions">
+
+                    <button
+                      class="money-mini money-minus"
+                      onclick="removeMoney('${p.key}',2000000)"
+                      title="-2M">
+
+                      −2M
+
+                    </button>
+
+
+                    <button
+                      class="money-mini money-minus"
+                      onclick="removeMoney('${p.key}',1000000)"
+                      title="-1M">
+
+                      −1M
+
+                    </button>
+
+
+                    <button
+                      class="money-mini money-plus"
+                      onclick="addMoney('${p.key}',1000000)"
+                      title="+1M">
+
+                      +1M
+
+                    </button>
+
+
+                    <button
+                      class="money-mini money-plus-strong"
+                      onclick="addMoney('${p.key}',2000000)"
+                      title="+2M">
+
+                      +2M
+
+                    </button>
+
+
+                    <div class="manual-mini">
+
+                      <button
+                        class="money-minus"
+                        onclick="manualApply('${p.key}',-1)"
+                        title="Para çıkar">
+
+                        −
+
+                      </button>
+
+
+                      <input
+                        id="manualAmount_${p.key}"
+                        inputmode="numeric"
+                        placeholder="1.500"
+                        oninput="formatManualInput(this)">
+
+
+                      <button
+                        class="money-plus"
+                        onclick="manualApply('${p.key}',1)"
+                        title="Para ekle">
+
+                        ＋
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="balance">
+                  ${fmt(p.balance)}
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `).join('')
+
+        :
+
+        `
+
+          <div
+            style="
+              text-align:center;
+              padding:20px
+            ">
+
+            Henüz oyuncu eklenmedi.
+
+            <br><br>
+
+            Yukarıdaki
+            <b>＋ Oyuncu</b>
+            butonundan ekleyebilirsin.
+
+          </div>
+
+        `
+      }
+
+    </div>
+
+  `;
+
 }
+
+
+/* =========================================================
+   TRANSFER TUTARI
+   ========================================================= */
+
 
 function formatAmountInput(el){
-  const clean=el.value.replace(/\D/g,'');
-  const formatted=clean?inputFmt(parseInt(clean)):'';
-  el.value=formatted;window.amountValue=formatted;
+
+  const clean=
+    el.value.replace(/\D/g,'');
+
+
+  const formatted=
+    clean?
+    inputFmt(parseInt(clean)):
+    '';
+
+
+  el.value=formatted;
+
+  amountValue=formatted;
+
 }
 
-function renderPlayers(){
-  document.getElementById('playersPage').innerHTML=`
-    <div class="card players-head">
-      <div><h2>Oyuncular</h2><span>${players.length}/6 oyuncu</span></div>
-      ${players.length?`<button class="btn primary" onclick="openPlayerDialog()" ${players.length>=6?'disabled':''}>＋ Oyuncu Ekle</button>`:''}
-    </div>
 
-    ${players.length?players.map(p=>`
-      <div class="card player-card">
-        <div class="player-top">
-          <div class="avatar">${esc(p.name[0].toUpperCase())}</div>
-          <div class="player-info">
-            <div class="player-name" style="font-size:18px">${esc(p.name)}</div>
-            <div class="balance">${fmt(p.balance)}</div>
-          </div>
-        </div>
+/* =========================================================
+   GEÇMİŞ
+   ========================================================= */
 
-        <div class="player-actions">
-          <button class="btn outline" onclick="removeMoney('${p.key}',2000000)">−2M</button>
-          <button class="btn outline" onclick="removeMoney('${p.key}',1000000)">−1M</button>
-          <button class="btn tonal" onclick="addMoney('${p.key}',1000000)">＋1M</button>
-          <button class="btn primary" onclick="addMoney('${p.key}',2000000)">＋2M</button>
-        </div>
-
-        <div class="manual-row">
-          <button class="btn danger" onclick="manualApply('${p.key}',-1)">−</button>
-          <input id="manualAmount_${p.key}" inputmode="numeric" placeholder="Örn: 1.500 (tapu, kira vs.)" oninput="formatManualInput(this)">
-          <button class="btn success" onclick="manualApply('${p.key}',1)">＋</button>
-        </div>
-
-        <div class="player-manage">
-          <button class="btn success" onclick="editPlayerName('${p.key}')">✏️ İsmi Değiştir</button>
-          <button class="btn danger" onclick="removePlayer('${p.key}')">🗑️ Sil</button>
-        </div>
-      </div>
-    `).join(''):`
-      <div class="card empty">
-        <div class="big">👥</div>
-        <h3>Henüz oyuncu yok.</h3>
-        <button class="btn primary" onclick="openPlayerDialog()">＋ İlk Oyuncuyu Ekle</button>
-      </div>
-    `}`;
-}
 
 function renderHistory(){
-  document.getElementById('historyPage').innerHTML=`
-    <div class="history-title">İşlem Geçmişi</div>
+
+  document.getElementById(
+    'historyPage'
+  ).innerHTML=`
+
+    <div class="history-title">
+      İşlem Geçmişi
+    </div>
+
+
     <div class="card">
-      ${transactions.length?transactions.map(t=>{
-        const time=new Date(t.time).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-        let icon='🫱🏼‍🫲🏼';
-        if(t.from==='Banka')icon='💰';
-        else if(t.to==='Banka')icon='💸';
-        return `<div class="history-item"><div class="avatar">${icon}</div><div class="history-main"><b>${esc(t.from)} → ${esc(t.to)}</b><div class="history-time">${time}</div></div><div class="history-amount">${fmt(t.amount)}</div></div>`;
-      }).join(''):`<div class="empty"><div class="big">🧾</div><div>Henüz işlem yapılmadı.</div></div>`}
-    </div>`;
+
+      ${
+        transactions.length
+
+        ?
+
+        transactions.map(t=>{
+
+          const time=
+            new Date(t.time)
+            .toLocaleTimeString(
+              'tr-TR',
+              {
+                hour:'2-digit',
+                minute:'2-digit'
+              }
+            );
+
+
+          /*
+             Geçmişteki avatarlar burada.
+             Oyuncu kartlarından bağımsızdır.
+          */
+
+          let icon='↔️';
+
+
+          if(t.from==='Banka')
+            icon='💰';
+
+          else if(t.to==='Banka')
+            icon='💸';
+
+
+          return `
+
+            <div class="history-item">
+
+              <div class="avatar">
+                ${icon}
+              </div>
+
+
+              <div class="history-main">
+
+                <b>
+                  ${esc(t.from)}
+                  →
+                  ${esc(t.to)}
+                </b>
+
+                <div class="history-time">
+                  ${time}
+                </div>
+
+              </div>
+
+
+              <div class="history-amount">
+                ${fmt(t.amount)}
+              </div>
+
+            </div>
+
+          `;
+
+        }).join('')
+
+        :
+
+        `
+
+          <div class="empty">
+
+            <div class="big">
+              🧾
+            </div>
+
+            <div>
+              Henüz işlem yapılmadı.
+            </div>
+
+          </div>
+
+        `
+      }
+
+    </div>
+
+  `;
+
 }
 
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 
-document.getElementById('playerName').addEventListener('keydown',e=>{if(e.key==='Enter')addPlayer()});
-document.getElementById('roomName').addEventListener('keydown',e=>{if(e.key==='Enter')createRoom()});
-document.getElementById('roomPasswordInput').addEventListener('keydown',e=>{if(e.key==='Enter')submitRoomPassword()});
+/* =========================================================
+   GÜVENLİ METİN
+   ========================================================= */
+
+
+function esc(s){
+
+  return String(s).replace(
+    /[&<>"']/g,
+    m=>({
+
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#039;'
+
+    }[m])
+  );
+
+}
+
+
+/* =========================================================
+   KLAVYE
+   ========================================================= */
+
+
+document
+  .getElementById('playerName')
+  .addEventListener(
+    'keydown',
+    e=>{
+
+      if(e.key==='Enter')
+        addPlayer();
+
+    }
+  );
+
+
+document
+  .getElementById('roomName')
+  .addEventListener(
+    'keydown',
+    e=>{
+
+      if(e.key==='Enter')
+        createRoom();
+
+    }
+  );
+
+
+document
+  .getElementById('roomPasswordInput')
+  .addEventListener(
+    'keydown',
+    e=>{
+
+      if(e.key==='Enter')
+        submitRoomPassword();
+
+    }
+  );
+
+
 render();
+
 </script>
+
 </body>
 </html>
