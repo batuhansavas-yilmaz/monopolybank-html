@@ -2624,6 +2624,10 @@ function renderRoomsList(){
     'roomsPage'
   ).innerHTML=`
 
+   ${
+  keys.length
+  ?
+  `
     <div class="card players-head">
 
       <div>
@@ -2636,21 +2640,17 @@ function renderRoomsList(){
 
       </div>
 
-      ${
-        keys.length
-        ?
-        `
-          <button
-            class="btn primary"
-            onclick="openRoomDialog()">
-            ＋ Masa Ekle
-          </button>
-        `
-        :
-        ''
-      }
+      <button
+        class="btn primary"
+        onclick="openRoomDialog()">
+        ＋ Masa Ekle
+      </button>
 
     </div>
+  `
+  :
+  ''
+}
 
 
     ${
@@ -2759,7 +2759,7 @@ function renderRoomsList(){
 
         <div class="card empty">
 
-          <div class="big">🏠</div>
+          <div class="big">🎲</div>
 
           <h3>Henüz masa yok.</h3>
 
